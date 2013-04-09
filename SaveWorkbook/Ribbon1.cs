@@ -32,5 +32,10 @@ namespace SaveWorkbook
                 System.Windows.Forms.MessageBox.Show("File not saved!");
             }
         }
+
+        private void btnISN117_Click(object sender, RibbonControlEventArgs e)
+        {
+            aApp.thisAddin.SaveISN117();
+        }
     }
 }
