@@ -37,6 +37,7 @@
             this.tab1 = this.Factory.CreateRibbonTab();
             this.group1 = this.Factory.CreateRibbonGroup();
             this.btnGaps = this.Factory.CreateRibbonButton();
+            this.btnISN117 = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             // 
@@ -50,6 +51,7 @@
             // group1
             // 
             this.group1.Items.Add(this.btnGaps);
+            this.group1.Items.Add(this.btnISN117);
             this.group1.Label = "Save Report";
             this.group1.Name = "group1";
             // 
@@ -61,6 +63,15 @@
             this.btnGaps.Name = "btnGaps";
             this.btnGaps.ShowImage = true;
             this.btnGaps.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnGaps_Click);
+            // 
+            // btnISN117
+            // 
+            this.btnISN117.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnISN117.Image = ((System.Drawing.Image)(resources.GetObject("btnISN117.Image")));
+            this.btnISN117.Label = "117 by ISN";
+            this.btnISN117.Name = "btnISN117";
+            this.btnISN117.ShowImage = true;
+            this.btnISN117.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnISN117_Click);
             // 
             // rbnSaveReport
             // 
@@ -79,6 +90,7 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonTab tab1;
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup group1;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnGaps;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnISN117;
     }
 
     partial class ThisRibbonCollection
