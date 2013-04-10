@@ -82,6 +82,7 @@
             this.btn473.Label = "473";
             this.btn473.Name = "btn473";
             this.btn473.ShowImage = true;
+            this.btn473.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btn473_Click);
             // 
             // rbnSaveReport
             // 

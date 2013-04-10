@@ -37,5 +37,10 @@ namespace SaveWorkbook
         {
             aApp.thisAddin.SaveISN117();
         }
+
+        private void btn473_Click(object sender, RibbonControlEventArgs e)
+        {
+            aApp.thisAddin.Save473();
+        }
     }
 }
