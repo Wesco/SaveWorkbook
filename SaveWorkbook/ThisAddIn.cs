@@ -205,6 +205,10 @@ namespace SaveWorkbook
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
+            Application.WorkbookActivate -= Application_WorkbookActivate;
+            Application.SheetActivate -= Application_SheetActivate;
+            Application.WorkbookOpen -= Application_WorkbookOpen;
+            Application.WorkbookNewSheet -= Application_WorkbookNewSheet;
         }
         #endregion
 
