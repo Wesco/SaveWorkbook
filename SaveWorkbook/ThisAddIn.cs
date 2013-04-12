@@ -201,6 +201,8 @@ namespace SaveWorkbook
             Application.SheetActivate += Application_SheetActivate;
             Application.WorkbookOpen += Application_WorkbookOpen;
             Application.WorkbookNewSheet += Application_WorkbookNewSheet;
+            ActiveWorkbook = Application.ActiveWorkbook;
+            ActiveSheet = Application.ActiveSheet;
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
