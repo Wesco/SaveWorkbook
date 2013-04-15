@@ -42,7 +42,6 @@ namespace SaveWorkbook
         private Excel.Workbooks Workbooks { get; set; }
         private Excel.Workbook ThisWorkbook { get; set; }
 
-        //Save 117 by inside sales number
         public void SaveISN117()
         {
             DateTime dt = DateTime.Now;
@@ -142,6 +141,39 @@ namespace SaveWorkbook
                 if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
                     System.Windows.Forms.MessageBox.Show(e.Message.ToString());
             }
+        }
+
+        public void SaveVMI()
+        {
+            foreach (Excel.Worksheet s in ActiveWorkbook.Worksheets)
+            {
+                DateTime dt = DateTime.Now.AddMonths(-1);
+                Office.MsoFileDialogType dlgType = Office.MsoFileDialogType.msoFileDialogSaveAs;
+
+                if (s.Name != "Drop In" &&
+                    s.Name != "PivotTable" &&
+                    s.Name != "Info" &&
+                    s.Name != "Macro" &&
+                    s.Name != "VMI eStock" &&
+                    s.Name != "Master")
+                {
+                    s.Copy();
+                    if (s.Range["C5"].Text != "")
+                    {
+                        s.Columns[ActiveSheet.UsedRange.Columns.Count].Delete();
+                    }
+                    Application.FileDialog[dlgType].InitialFileName = s.Name + "_" + String.Format("{0:MMM_yyyy}", dt);
+                    Application.FileDialog[dlgType].Show();
+                    if (Application.FileDialog[dlgType].SelectedItems.Count > 0)
+                    {
+                        ActiveWorkbook.SaveAs(Application.FileDialog[dlgType].SelectedItems.Item(1), Excel.XlFileFormat.xlOpenXMLWorkbook);
+                    }
+                    Application.DisplayAlerts = false;
+                    ActiveWorkbook.Close();
+                    Application.DisplayAlerts = true;
+                }
+            }
+
         }
 
         /// <summary>

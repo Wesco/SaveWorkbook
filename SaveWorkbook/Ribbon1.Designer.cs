@@ -39,6 +39,7 @@
             this.btnGaps = this.Factory.CreateRibbonButton();
             this.btnISN117 = this.Factory.CreateRibbonButton();
             this.btn473 = this.Factory.CreateRibbonButton();
+            this.btnVMI = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             // 
@@ -52,6 +53,7 @@
             // group1
             // 
             this.group1.Items.Add(this.btnGaps);
+            this.group1.Items.Add(this.btnVMI);
             this.group1.Items.Add(this.btnISN117);
             this.group1.Items.Add(this.btn473);
             this.group1.Label = "Save Report";
@@ -70,7 +72,7 @@
             // 
             this.btnISN117.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnISN117.Image = ((System.Drawing.Image)(resources.GetObject("btnISN117.Image")));
-            this.btnISN117.Label = "117 by ISN";
+            this.btnISN117.Label = "117";
             this.btnISN117.Name = "btnISN117";
             this.btnISN117.ShowImage = true;
             this.btnISN117.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnISN117_Click);
@@ -83,6 +85,15 @@
             this.btn473.Name = "btn473";
             this.btn473.ShowImage = true;
             this.btn473.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btn473_Click);
+            // 
+            // btnVMI
+            // 
+            this.btnVMI.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnVMI.Image = ((System.Drawing.Image)(resources.GetObject("btnVMI.Image")));
+            this.btnVMI.Label = "VMI";
+            this.btnVMI.Name = "btnVMI";
+            this.btnVMI.ShowImage = true;
+            this.btnVMI.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnVMI_Click);
             // 
             // rbnSaveReport
             // 
@@ -103,6 +114,7 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnGaps;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnISN117;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btn473;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnVMI;
     }
 
     partial class ThisRibbonCollection

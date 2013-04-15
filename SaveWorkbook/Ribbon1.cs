@@ -42,5 +42,10 @@ namespace SaveWorkbook
         {
             aApp.thisAddin.Save473();
         }
+
+        private void btnVMI_Click(object sender, RibbonControlEventArgs e)
+        {
+            aApp.thisAddin.SaveVMI();
+        }
     }
 }
