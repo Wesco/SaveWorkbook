@@ -10,7 +10,7 @@ using System.IO;
 
 namespace SaveWorkbook
 {
-    public class aApp
+    public class App
     {
         public static ThisAddIn thisAddin { get; set; }
     }
@@ -85,7 +85,7 @@ namespace SaveWorkbook
 
                     try
                     {
-                        App.oApp.ActiveWorkbook.SaveAs(path + fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+                        ActiveWorkbook.SaveAs(path + fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
                     }
                     catch (Exception e)
                     {
@@ -112,7 +112,7 @@ namespace SaveWorkbook
 
                     try
                     {
-                        App.oApp.ActiveWorkbook.SaveAs(path + fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+                        ActiveWorkbook.SaveAs(path + fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
                     }
                     catch (Exception e)
                     {
@@ -176,6 +176,25 @@ namespace SaveWorkbook
 
         }
 
+        public void SaveGAPS()
+        {
+            DateTime dt = DateTime.Now;
+            string Branch = (ActiveSheet.Range["A2"].Value).ToString();
+            string sPath = @"\\BR3615GAPS\Gaps\" + Branch + @" Gaps Download\" + String.Format("{0:yyyy}", dt) + @"\";
+            string sFile = Branch + " " + String.Format("{0:M-dd-yy}", dt) + ".xlsx";
+            
+            try
+            {
+                ActiveWorkbook.SaveAs(sPath + sFile, Excel.XlFileFormat.xlOpenXMLWorkbook);
+            }
+            catch (Exception e)
+            {
+                //If error is not due to user canceled save display the error message
+                if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
+                    System.Windows.Forms.MessageBox.Show(e.Message.ToString());
+            }
+        }
+
         /// <summary>
         /// Finds the specified column and returns the column number.
         /// If no column is found then 0 is returned.
@@ -227,8 +246,7 @@ namespace SaveWorkbook
         #region AddIn_Events
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
-            App.oApp = this.Application;
-            aApp.thisAddin = this;
+            App.thisAddin = this;
             Application.WorkbookActivate += Application_WorkbookActivate;
             Application.SheetActivate += Application_SheetActivate;
             Application.WorkbookOpen += Application_WorkbookOpen;
@@ -259,10 +277,5 @@ namespace SaveWorkbook
         }
 
         #endregion
-    }
-
-    public class App
-    {
-        public static Excel.Application oApp { get; set; }
     }
 }

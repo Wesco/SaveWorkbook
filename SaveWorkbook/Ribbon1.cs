@@ -14,38 +14,22 @@ namespace SaveWorkbook
     {
         private void btnGaps_Click(object sender, RibbonControlEventArgs e)
         {
-            SaveWkbk((App.oApp.ActiveWorkbook.ActiveSheet.Range("A2").Value).ToString());
-        }
-
-        private void SaveWkbk(String Branch)
-        {
-            DateTime dt = DateTime.Now;
-            string sPath = @"\\BR3615GAPS\Gaps\" + Branch + @" Gaps Download\" + String.Format("{0:yyyy}", dt) + @"\";
-            string sFile = Branch + " " + String.Format("{0:M-dd-yy}", dt) + ".xlsx";
-
-            try
-            {
-                App.oApp.ActiveWorkbook.SaveAs(sPath + sFile, Excel.XlFileFormat.xlOpenXMLWorkbook);
-            }
-            catch (Exception)
-            {
-                System.Windows.Forms.MessageBox.Show("File not saved!");
-            }
+            App.thisAddin.SaveGAPS();
         }
 
         private void btnISN117_Click(object sender, RibbonControlEventArgs e)
         {
-            aApp.thisAddin.SaveISN117();
+            App.thisAddin.SaveISN117();
         }
 
         private void btn473_Click(object sender, RibbonControlEventArgs e)
         {
-            aApp.thisAddin.Save473();
+            App.thisAddin.Save473();
         }
 
         private void btnVMI_Click(object sender, RibbonControlEventArgs e)
         {
-            aApp.thisAddin.SaveVMI();
+            App.thisAddin.SaveVMI();
         }
     }
 }
