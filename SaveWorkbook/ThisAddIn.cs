@@ -121,25 +121,35 @@ namespace SaveWorkbook
                             System.Windows.Forms.MessageBox.Show(e.Message.ToString());
                     }
                 }
-
             }
         }
 
         public void Save473()
         {
             DateTime dt = DateTime.Now;
-            string Path = @"\\br3615gaps\gaps\473 Download\";
-            string FileName = "473 " + string.Format("{0:M-dd-yy}", dt) + ".xlsx";
+            string path = @"\\br3615gaps\gaps\473 Download\";
+            string fileName = "473 " + string.Format("{0:M-dd-yy}", dt) + ".xlsx";
+            string reportType = (ActiveSheet.Range["A1"].Value).ToString();
 
-            try
+            //Verify that report is a 473 Open Order Report
+            if (reportType.Length > 3)
             {
-                ActiveWorkbook.SaveAs(Path + FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
-            }
-            catch (Exception e)
-            {
-                //If error is not due to user canceled save display the error message
-                if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
-                    System.Windows.Forms.MessageBox.Show(e.Message.ToString());
+                reportType = reportType.Substring(0, 3);
+
+                //If it is a 473 then try to save
+                if (reportType == "473")
+                {
+                    try
+                    {
+                        ActiveWorkbook.SaveAs(path + fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+                    }
+                    catch (Exception e)
+                    {
+                        //If error is not due to user canceled save display the error message
+                        if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
+                            System.Windows.Forms.MessageBox.Show(e.Message.ToString());
+                    }
+                }
             }
         }
 
@@ -182,10 +192,12 @@ namespace SaveWorkbook
             string Branch = (ActiveSheet.Range["A2"].Value).ToString();
             string sPath = @"\\BR3615GAPS\Gaps\" + Branch + @" Gaps Download\" + String.Format("{0:yyyy}", dt) + @"\";
             string sFile = Branch + " " + String.Format("{0:M-dd-yy}", dt) + ".xlsx";
-            
+
             try
             {
-                ActiveWorkbook.SaveAs(sPath + sFile, Excel.XlFileFormat.xlOpenXMLWorkbook);
+                //Try to verify that the file being saved is actuall GAPS
+                if ((ActiveSheet.Range["A1"].Value).ToString() == "Branch_id" && (ActiveSheet.Range["CU1"].Value).ToString() == "Wdc_rt_qty")
+                    ActiveWorkbook.SaveAs(sPath + sFile, Excel.XlFileFormat.xlOpenXMLWorkbook);
             }
             catch (Exception e)
             {
