@@ -127,9 +127,10 @@ namespace SaveWorkbook
         public void Save473()
         {
             DateTime dt = DateTime.Now;
-            string path = @"\\br3615gaps\gaps\473 Download\";
             string fileName = "473 " + string.Format("{0:M-dd-yy}", dt) + ".xlsx";
             string reportType = (ActiveSheet.Range["A1"].Value).ToString();
+            string branch = (ActiveSheet.Range["A3"].Value).ToString();
+            string path = @"\\br3615gaps\gaps\" + branch + @" 473 Download\";
 
             //Verify that report is a 473 Open Order Report
             if (reportType.Length > 3)
@@ -139,6 +140,9 @@ namespace SaveWorkbook
                 //If it is a 473 then try to save
                 if (reportType == "473")
                 {
+                    if (!Directory.Exists(path))
+                        Directory.CreateDirectory(path);
+
                     try
                     {
                         ActiveWorkbook.SaveAs(path + fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
