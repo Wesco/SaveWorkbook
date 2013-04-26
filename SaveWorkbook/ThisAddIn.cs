@@ -247,27 +247,6 @@ namespace SaveWorkbook
             }
         }
 
-        public void CheckForUpdates()
-        {
-            IEnumerable<string> dirList;
-            string ver;
-            string remoteVer;
-
-            try { dirList = Directory.EnumerateDirectories(@"\\br3615gaps\gaps\Excel Add-Ins\SaveWorkbook\publish\Application Files\"); }
-            catch { dirList = new string[] { "1_0_0_0" }; }
-            remoteVer = dirList.Last<string>().Substring(dirList.Last<string>().Length - 7).Replace('_', '.');
-
-            try { ver = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString(); }
-            catch 
-            { 
-                ver = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-                remoteVer = ver;
-            }
-
-            if (ver != remoteVer)
-                System.Windows.Forms.MessageBox.Show("An update for the SaveWorkbooks add-in is available.");
-        }
-
         #region Event_Handlers
         void Application_SheetActivate(object Sh)
         {
@@ -297,9 +276,9 @@ namespace SaveWorkbook
         #endregion
 
         #region AddIn_Events
+        
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
-            App.thisAddin.CheckForUpdates();
             App.thisAddin = this;
             Application.WorkbookActivate += Application_WorkbookActivate;
             Application.SheetActivate += Application_SheetActivate;
