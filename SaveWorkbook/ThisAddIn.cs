@@ -48,7 +48,7 @@ namespace SaveWorkbook
 
             string path;
             string fileName;
-            string[] reportType = new string[2];
+            string[] reportType = new string[3];
             string branch = "";
             int ISN = 0;
 
@@ -59,67 +59,69 @@ namespace SaveWorkbook
 
                 reportType[0] = (ActiveSheet.Range["A1"].Value).ToString();
                 reportType[1] = (ActiveSheet.Range["A1"].Value).ToString();
+                reportType[2] = (ActiveSheet.Range["A1"].Value).ToString();
 
                 reportType[0] = reportType[0].Replace(" ", String.Empty);
                 reportType[0] = reportType[0].Substring(reportType[0].Length - 10);
 
                 reportType[1] = reportType[1].Replace(" ", String.Empty);
                 reportType[1] = reportType[1].Substring(reportType[1].Length - 19);
+
+                reportType[2] = reportType[0].Replace(" ", String.Empty);
+                reportType[2] = reportType[0].Substring(reportType[0].Length - 9);
             }
 
-            //If it is a back order report
-            if (reportType[0] == "BACKORDERS")
+            for (int i = 0; i < reportType.Count(); i++)
             {
-                //Try to find the inside sales number
-                int.TryParse((ActiveSheet.Cells[3, FindColumnHeader(2, "IN")].Value).ToString(), out ISN);
-
-                if (ISN != 0)
+                switch (reportType[i])
                 {
-                    path = @"\\br3615gaps\gaps\3615 117 Report\ByInsideSalesNumber\" + ISN + @"\";
-                    fileName = branch + " " + String.Format("{0:M-dd-yy}", dt) + " BACKORDERS" + ".xlsx";
+                    case "BACKORDERS":
+                        //Try to find the inside sales number
+                        int.TryParse((ActiveSheet.Cells[3, FindColumnHeader(2, "IN")].Value).ToString(), out ISN);
 
-                    if (!Directory.Exists(path))
-                    {
-                        Directory.CreateDirectory(path);
-                    }
+                        if (ISN != 0)
+                        {
+                            path = @"\\br3615gaps\gaps\3615 117 Report\ByInsideSalesNumber\" + ISN + @"\";
+                            fileName = branch + " " + String.Format("{0:M-dd-yy}", dt) + " BACKORDERS" + ".xlsx";
 
-                    try
-                    {
-                        ActiveWorkbook.SaveAs(path + fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
-                    }
-                    catch (Exception e)
-                    {
-                        //If error is not due to user canceled save display the error message
-                        if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
-                            System.Windows.Forms.MessageBox.Show(e.Message.ToString());
-                    }
-                }
-            }
-            else if (reportType[1] == "DIRECTSHIPPEDORDERS")
-            {
-                //Try to find the inside sales number
-                int.TryParse((ActiveSheet.Cells[3, FindColumnHeader(2, "IN")].Value).ToString(), out ISN);
+                            if (!Directory.Exists(path))
+                                Directory.CreateDirectory(path);
 
-                if (ISN != 0)
-                {
-                    path = @"\\br3615gaps\gaps\3615 117 Report\ByInsideSalesNumber\" + ISN + @"\";
-                    fileName = branch + " " + String.Format("{0:M-dd-yy}", dt) + " DSORDERS" + ".xlsx";
+                            SaveActiveBook(path, fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+                        }
+                        break;
 
-                    if (!Directory.Exists(path))
-                    {
-                        Directory.CreateDirectory(path);
-                    }
+                    case "DIRECTSHIPPEDORDERS":
+                        //Try to find the inside sales number
+                        int.TryParse((ActiveSheet.Cells[3, FindColumnHeader(2, "IN")].Value).ToString(), out ISN);
 
-                    try
-                    {
-                        ActiveWorkbook.SaveAs(path + fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
-                    }
-                    catch (Exception e)
-                    {
-                        //If error is not due to user canceled save display the error message
-                        if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
-                            System.Windows.Forms.MessageBox.Show(e.Message.ToString());
-                    }
+                        if (ISN != 0)
+                        {
+                            path = @"\\br3615gaps\gaps\3615 117 Report\ByInsideSalesNumber\" + ISN + @"\";
+                            fileName = branch + " " + String.Format("{0:M-dd-yy}", dt) + " DSORDERS" + ".xlsx";
+
+                            if (!Directory.Exists(path))
+                                Directory.CreateDirectory(path);
+
+                            SaveActiveBook(path, fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+                        }
+                        break;
+
+                    case "ALLORDERS":
+                        //Try to find the inside sales number
+                        int.TryParse((ActiveSheet.Cells[3, FindColumnHeader(2, "IN")].Value).ToString(), out ISN);
+
+                        if (ISN != 0)
+                        {
+                            path = @"\\br3615gaps\gaps\3615 117 Report\ByInsideSalesNumber\" + ISN + @"\";
+                            fileName = branch + " " + String.Format("{0:M-dd-yy}", dt) + " ALLORDERS" + ".xlsx";
+
+                            if (!Directory.Exists(path))
+                                Directory.CreateDirectory(path);
+
+                            SaveActiveBook(path, fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+                        }
+                        break;
                 }
             }
         }
@@ -231,6 +233,41 @@ namespace SaveWorkbook
             return 0;
         }
 
+        private void SaveActiveBook(string Path, string FileName, Excel.XlFileFormat FileFormat)
+        {
+            try
+            {
+                ActiveWorkbook.SaveAs(Path + FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+            }
+            catch (Exception e)
+            {
+                //If error is not due to user canceled save display the error message
+                if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
+                    System.Windows.Forms.MessageBox.Show(e.Message.ToString());
+            }
+        }
+
+        public void CheckForUpdates()
+        {
+            IEnumerable<string> dirList;
+            string ver;
+            string remoteVer;
+
+            try { dirList = Directory.EnumerateDirectories(@"\\br3615gaps\gaps\Excel Add-Ins\SaveWorkbook\publish\Application Files\"); }
+            catch { dirList = new string[] { "1_0_0_0" }; }
+            remoteVer = dirList.Last<string>().Substring(dirList.Last<string>().Length - 7).Replace('_', '.');
+
+            try { ver = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString(); }
+            catch 
+            { 
+                ver = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                remoteVer = ver;
+            }
+
+            if (ver != remoteVer)
+                System.Windows.Forms.MessageBox.Show("An update for the SaveWorkbooks add-in is available.");
+        }
+
         #region Event_Handlers
         void Application_SheetActivate(object Sh)
         {
@@ -262,6 +299,7 @@ namespace SaveWorkbook
         #region AddIn_Events
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
+            App.thisAddin.CheckForUpdates();
             App.thisAddin = this;
             Application.WorkbookActivate += Application_WorkbookActivate;
             Application.SheetActivate += Application_SheetActivate;
