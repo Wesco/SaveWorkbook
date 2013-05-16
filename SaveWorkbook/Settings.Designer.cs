@@ -130,6 +130,7 @@
             this.btnGapsBrowse.TabIndex = 9;
             this.btnGapsBrowse.Text = "Browse";
             this.btnGapsBrowse.UseVisualStyleBackColor = true;
+            this.btnGapsBrowse.Click += new System.EventHandler(this.btnGapsBrowse_Click);
             // 
             // btn117Browse
             // 

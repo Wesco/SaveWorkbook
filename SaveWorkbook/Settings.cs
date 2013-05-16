@@ -18,7 +18,7 @@ namespace SaveWorkbook
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            string path = txtPath.Text;
+            string path = "";
 
             if (SetPath(ref path))
             {
@@ -26,13 +26,23 @@ namespace SaveWorkbook
                 Properties.Settings.Default.PathSave = path;
                 Properties.Settings.Default.Save();
             }
-
-            
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void btnGapsBrowse_Click(object sender, EventArgs e)
+        {
+            string path = "";
+
+            if (SetPath(ref path))
+            {
+                txtPath.Text = path;
+                Properties.Settings.Default.PathSave = path;
+                Properties.Settings.Default.Save();
+            }
         }
 
         private bool SetPath(ref string path)
@@ -47,7 +57,7 @@ namespace SaveWorkbook
             }
             else
                 result = false;
-   
+
             fd.Dispose();
 
             return result;
