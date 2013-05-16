@@ -36,10 +36,12 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(rbnSaveReport));
             this.tab1 = this.Factory.CreateRibbonTab();
             this.group1 = this.Factory.CreateRibbonGroup();
+            this.separator1 = this.Factory.CreateRibbonSeparator();
             this.btnGaps = this.Factory.CreateRibbonButton();
+            this.btnVMI = this.Factory.CreateRibbonButton();
             this.btnISN117 = this.Factory.CreateRibbonButton();
             this.btn473 = this.Factory.CreateRibbonButton();
-            this.btnVMI = this.Factory.CreateRibbonButton();
+            this.btnConfigure = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             // 
@@ -56,8 +58,14 @@
             this.group1.Items.Add(this.btnVMI);
             this.group1.Items.Add(this.btnISN117);
             this.group1.Items.Add(this.btn473);
+            this.group1.Items.Add(this.separator1);
+            this.group1.Items.Add(this.btnConfigure);
             this.group1.Label = "Save Report";
             this.group1.Name = "group1";
+            // 
+            // separator1
+            // 
+            this.separator1.Name = "separator1";
             // 
             // btnGaps
             // 
@@ -67,6 +75,15 @@
             this.btnGaps.Name = "btnGaps";
             this.btnGaps.ShowImage = true;
             this.btnGaps.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnGaps_Click);
+            // 
+            // btnVMI
+            // 
+            this.btnVMI.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnVMI.Image = ((System.Drawing.Image)(resources.GetObject("btnVMI.Image")));
+            this.btnVMI.Label = "VMI";
+            this.btnVMI.Name = "btnVMI";
+            this.btnVMI.ShowImage = true;
+            this.btnVMI.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnVMI_Click);
             // 
             // btnISN117
             // 
@@ -86,14 +103,14 @@
             this.btn473.ShowImage = true;
             this.btn473.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btn473_Click);
             // 
-            // btnVMI
+            // btnConfigure
             // 
-            this.btnVMI.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnVMI.Image = ((System.Drawing.Image)(resources.GetObject("btnVMI.Image")));
-            this.btnVMI.Label = "VMI";
-            this.btnVMI.Name = "btnVMI";
-            this.btnVMI.ShowImage = true;
-            this.btnVMI.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnVMI_Click);
+            this.btnConfigure.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnConfigure.Image = ((System.Drawing.Image)(resources.GetObject("btnConfigure.Image")));
+            this.btnConfigure.Label = "Configure";
+            this.btnConfigure.Name = "btnConfigure";
+            this.btnConfigure.ShowImage = true;
+            this.btnConfigure.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnConfigure_Click);
             // 
             // rbnSaveReport
             // 
@@ -115,6 +132,8 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnISN117;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btn473;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnVMI;
+        internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator1;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnConfigure;
     }
 
     partial class ThisRibbonCollection

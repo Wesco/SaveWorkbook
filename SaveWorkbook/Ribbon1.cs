@@ -31,5 +31,11 @@ namespace SaveWorkbook
         {
             App.thisAddin.SaveVMI();
         }
+
+        private void btnConfigure_Click(object sender, RibbonControlEventArgs e)
+        {
+            frmSettings frm = new frmSettings();
+            frm.Show();
+        }
     }
 }
