@@ -23,7 +23,7 @@ namespace SaveWorkbook
             string path;
 
             if (SetPath(out path))
-                Properties.Settings.Default.PathGAPS = path;
+                txtGapsPath.Text = path;
         }
 
         private void btn117Browse_Click(object sender, EventArgs e)
@@ -31,7 +31,7 @@ namespace SaveWorkbook
             string path;
 
             if (SetPath(out path))
-                Properties.Settings.Default.Path117 = path;
+                txt117Path.Text = path;
         }
 
         private void btn473Browse_Click(object sender, EventArgs e)
@@ -39,31 +39,14 @@ namespace SaveWorkbook
             string path;
 
             if (SetPath(out path))
-                Properties.Settings.Default.Path473 = path;
+                txt473Path.Text = path;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            Regex rxFilePath = new Regex(@"^(?:[A-Za-z]\:\\|\\\\[\w.]+\\)(?:[^\\ ][\w!@#$%^&()_+;'\.,  .]*\\)+$");
-
-            if (rxFilePath.IsMatch(txt117Path.Text))
-            {
-                txt117Path.BackColor = Color.White;
-                Properties.Settings.Default.Path117 = txt117Path.Text;
-            }
-            else
-                txt117Path.BackColor = Color.LightPink;
-                
-
-            if (rxFilePath.IsMatch(txt473Path.Text))
-                Properties.Settings.Default.Path473 = txt473Path.Text;
-
-            if (rxFilePath.IsMatch(txtGapsPath.Text))
-                Properties.Settings.Default.PathGAPS = txtGapsPath.Text;
-
-            if (rxFilePath.IsMatch(txt117Path.Text) &
-                rxFilePath.IsMatch(txt473Path.Text) &
-                rxFilePath.IsMatch(txtGapsPath.Text))
+            if (IsValidPath(txt117Path.Text) &
+                IsValidPath(txt473Path.Text) &
+                IsValidPath(txtGapsPath.Text))
                 Properties.Settings.Default.Save();
         }
 
@@ -81,6 +64,9 @@ namespace SaveWorkbook
             if (fd.ShowDialog() == DialogResult.OK)
             {
                 path = fd.SelectedPath;
+                if (path.Substring(path.Length - 1) != "\\")
+                    path += "\\";
+
                 result = true;
             }
             else
@@ -94,11 +80,52 @@ namespace SaveWorkbook
             return result;
         }
 
+        private bool IsValidPath(string path)
+        {
+            Regex rxFilePath = new Regex(@"^(?:[A-Za-z]\:\\|\\\\[\w.]+\\)(?:[^\\ ][\w!@#$%^&()_+;'\.,  .]*\\)+$");
+            return rxFilePath.IsMatch(path);
+        }
+
         private void frmSettings_Load(object sender, EventArgs e)
         {
             txt117Path.Text = Properties.Settings.Default.Path117;
             txt473Path.Text = Properties.Settings.Default.Path473;
             txtGapsPath.Text = Properties.Settings.Default.PathGAPS;
         }
+
+        #region LostFocus events
+        private void txtGapsPath_Leave(object sender, EventArgs e)
+        {
+            if (IsValidPath(txtGapsPath.Text))
+            {
+                txtGapsPath.BackColor = Color.White;
+                Properties.Settings.Default.PathGAPS = txtGapsPath.Text;
+            }
+            else
+                txtGapsPath.BackColor = Color.LightPink;
+        }
+
+        private void txt117Path_Leave(object sender, EventArgs e)
+        {
+            if (IsValidPath(txt117Path.Text))
+            {
+                txt117Path.BackColor = Color.White;
+                Properties.Settings.Default.Path117 = txt117Path.Text;
+            }
+            else
+                txt117Path.BackColor = Color.LightPink;
+        }
+
+        private void txt473Path_Leave(object sender, EventArgs e)
+        {
+            if (IsValidPath(txt473Path.Text))
+            {
+                txt473Path.BackColor = Color.White;
+                Properties.Settings.Default.Path473 = txt473Path.Text;
+            }
+            else
+                txt473Path.BackColor = Color.LightPink;
+        }
+        #endregion
     }
 }

@@ -77,6 +77,7 @@
             this.txt473Path.Name = "txt473Path";
             this.txt473Path.Size = new System.Drawing.Size(244, 20);
             this.txt473Path.TabIndex = 5;
+            this.txt473Path.Leave += new System.EventHandler(this.txt473Path_Leave);
             // 
             // txt117Path
             // 
@@ -84,6 +85,7 @@
             this.txt117Path.Name = "txt117Path";
             this.txt117Path.Size = new System.Drawing.Size(244, 20);
             this.txt117Path.TabIndex = 6;
+            this.txt117Path.Leave += new System.EventHandler(this.txt117Path_Leave);
             // 
             // txtGapsPath
             // 
@@ -91,6 +93,7 @@
             this.txtGapsPath.Name = "txtGapsPath";
             this.txtGapsPath.Size = new System.Drawing.Size(244, 20);
             this.txtGapsPath.TabIndex = 7;
+            this.txtGapsPath.Leave += new System.EventHandler(this.txtGapsPath_Leave);
             // 
             // btnGapsBrowse
             // 
