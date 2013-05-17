@@ -16,36 +16,36 @@ namespace SaveWorkbook
             InitializeComponent();
         }
 
+        #region Buttons
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            string path = "";
+            string path;
 
-            if (SetPath(ref path))
-            {
+            if (SetPath(out path))
                 txtPath.Text = path;
-                Properties.Settings.Default.PathSave = path;
-                Properties.Settings.Default.Save();
-            }
+        }
+
+        private void btnGapsBrowse_Click(object sender, EventArgs e)
+        {
+            string path;
+
+            if (SetPath(out path))
+                txtPath.Text = path;
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.PathSave = txtPath.Text;
+            Properties.Settings.Default.Save();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+        #endregion
 
-        private void btnGapsBrowse_Click(object sender, EventArgs e)
-        {
-            string path = "";
-
-            if (SetPath(ref path))
-            {
-                txtPath.Text = path;
-                Properties.Settings.Default.PathSave = path;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        private bool SetPath(ref string path)
+        private bool SetPath(out string path)
         {
             FolderBrowserDialog fd = new FolderBrowserDialog();
             bool result;
@@ -56,11 +56,19 @@ namespace SaveWorkbook
                 result = true;
             }
             else
+            {
+                path = String.Empty;
                 result = false;
+            }
 
             fd.Dispose();
 
             return result;
+        }
+
+        private void frmSettings_Load(object sender, EventArgs e)
+        {
+            txtPath.Text = Properties.Settings.Default.PathSave;
         }
     }
 }
