@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace SaveWorkbook
@@ -17,26 +18,53 @@ namespace SaveWorkbook
         }
 
         #region Buttons
-        private void btnBrowse_Click(object sender, EventArgs e)
-        {
-            string path;
-
-            if (SetPath(out path))
-                txtPath.Text = path;
-        }
-
         private void btnGapsBrowse_Click(object sender, EventArgs e)
         {
             string path;
 
             if (SetPath(out path))
-                txtPath.Text = path;
+                Properties.Settings.Default.PathGAPS = path;
+        }
+
+        private void btn117Browse_Click(object sender, EventArgs e)
+        {
+            string path;
+
+            if (SetPath(out path))
+                Properties.Settings.Default.Path117 = path;
+        }
+
+        private void btn473Browse_Click(object sender, EventArgs e)
+        {
+            string path;
+
+            if (SetPath(out path))
+                Properties.Settings.Default.Path473 = path;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.PathSave = txtPath.Text;
-            Properties.Settings.Default.Save();
+            Regex rxFilePath = new Regex(@"^(?:[A-Za-z]\:\\|\\\\[\w.]+\\)(?:[^\\ ][\w!@#$%^&()_+;'\.,  .]*\\)+$");
+
+            if (rxFilePath.IsMatch(txt117Path.Text))
+            {
+                txt117Path.BackColor = Color.White;
+                Properties.Settings.Default.Path117 = txt117Path.Text;
+            }
+            else
+                txt117Path.BackColor = Color.LightPink;
+                
+
+            if (rxFilePath.IsMatch(txt473Path.Text))
+                Properties.Settings.Default.Path473 = txt473Path.Text;
+
+            if (rxFilePath.IsMatch(txtGapsPath.Text))
+                Properties.Settings.Default.PathGAPS = txtGapsPath.Text;
+
+            if (rxFilePath.IsMatch(txt117Path.Text) &
+                rxFilePath.IsMatch(txt473Path.Text) &
+                rxFilePath.IsMatch(txtGapsPath.Text))
+                Properties.Settings.Default.Save();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -68,7 +96,9 @@ namespace SaveWorkbook
 
         private void frmSettings_Load(object sender, EventArgs e)
         {
-            txtPath.Text = Properties.Settings.Default.PathSave;
+            txt117Path.Text = Properties.Settings.Default.Path117;
+            txt473Path.Text = Properties.Settings.Default.Path473;
+            txtGapsPath.Text = Properties.Settings.Default.PathGAPS;
         }
     }
 }

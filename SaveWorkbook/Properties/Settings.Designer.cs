@@ -25,19 +25,7 @@ namespace SaveWorkbook.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\\\\br3615gaps\\gaps\\")]
-        public string PathSave {
-            get {
-                return ((string)(this["PathSave"]));
-            }
-            set {
-                this["PathSave"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\br3615gaps\\gaps\\3615 Gaps Download")]
         public string PathGAPS {
             get {
                 return ((string)(this["PathGAPS"]));
@@ -49,13 +37,37 @@ namespace SaveWorkbook.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\br3615gaps\\gaps\\3615 117 Report")]
         public string Path117 {
             get {
                 return ((string)(this["Path117"]));
             }
             set {
                 this["Path117"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\br3615gaps\\gaps\\3615 473 Download")]
+        public string Path473 {
+            get {
+                return ((string)(this["Path473"]));
+            }
+            set {
+                this["Path473"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool RemoveFile {
+            get {
+                return ((bool)(this["RemoveFile"]));
+            }
+            set {
+                this["RemoveFile"] = value;
             }
         }
     }

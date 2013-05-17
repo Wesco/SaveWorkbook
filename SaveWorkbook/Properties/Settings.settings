@@ -2,14 +2,17 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SaveWorkbook.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="PathSave" Type="System.String" Scope="User">
-      <Value Profile="(Default)">\\br3615gaps\gaps\</Value>
-    </Setting>
     <Setting Name="PathGAPS" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">\\br3615gaps\gaps\3615 Gaps Download</Value>
     </Setting>
     <Setting Name="Path117" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">\\br3615gaps\gaps\3615 117 Report</Value>
+    </Setting>
+    <Setting Name="Path473" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\\br3615gaps\gaps\3615 473 Download</Value>
+    </Setting>
+    <Setting Name="RemoveFile" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>
