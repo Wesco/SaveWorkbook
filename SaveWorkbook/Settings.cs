@@ -47,10 +47,17 @@ namespace SaveWorkbook
             
             if (IsValidPath(txt117Path.Text) & IsValidPath(txt473Path.Text) & IsValidPath(txtGapsPath.Text))
             {
-                Properties.Settings.Default.Path117 = txt117Path.Text;
+                if (IsValidPath(txt117Path.Text))
+                    Properties.Settings.Default.Path117 = txt117Path.Text;
+
+                if (IsValidPath(txt473Path.Text))
                 Properties.Settings.Default.Path473 = txt473Path.Text;
+
+                if (IsValidPath(txtGapsPath.Text))
                 Properties.Settings.Default.PathGAPS = txtGapsPath.Text;
+
                 Properties.Settings.Default.Save();
+                this.Close();
             }
         }
 
@@ -63,6 +70,9 @@ namespace SaveWorkbook
         #region LostFocus events
         private void txtGapsPath_Leave(object sender, EventArgs e)
         {
+            if (txtGapsPath.Text.Right(1) != @"\")
+                txtGapsPath.Text += @"\";
+
             if (IsValidPath(txtGapsPath.Text))
             {
                 txtGapsPath.BackColor = Color.White;
@@ -74,6 +84,9 @@ namespace SaveWorkbook
 
         private void txt117Path_Leave(object sender, EventArgs e)
         {
+            if (txt117Path.Text.Right(1) != @"\")
+                txt117Path.Text += @"\";
+
             if (IsValidPath(txt117Path.Text))
             {
                 txt117Path.BackColor = Color.White;
@@ -85,6 +98,9 @@ namespace SaveWorkbook
 
         private void txt473Path_Leave(object sender, EventArgs e)
         {
+            if (txt473Path.Text.Right(1) != @"\")
+                txt473Path.Text += @"\";
+
             if (IsValidPath(txt473Path.Text))
             {
                 txt473Path.BackColor = Color.White;

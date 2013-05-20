@@ -87,8 +87,9 @@ namespace SaveWorkbook
                         Save473();
                         break;
 
-                    case "Branch_id":
-                        SaveGAPS();
+                    case "Bra":
+                        if (IsGaps())
+                            SaveGAPS();
                         break;
 
                     default:
@@ -188,7 +189,7 @@ namespace SaveWorkbook
             string fileName = "473 " + string.Format("{0:M-dd-yy}", dt) + ".xlsx";
             string reportType = (ActiveSheet.Range["A1"].Value).ToString();
             string branch = (ActiveSheet.Range["A3"].Value).ToString();
-            string path = @"\\br3615gaps\gaps\" + branch + @" 473 Download\";
+            string path = Properties.Settings.Default.Path473 + branch + @" 473 Download\";
 
             //Verify that report is a 473 Open Order Report
             if (reportType.Length > 3)
@@ -252,8 +253,11 @@ namespace SaveWorkbook
         {
             DateTime dt = DateTime.Now;
             string Branch = (ActiveSheet.Range["A2"].Value).ToString();
-            string sPath = @"\\BR3615GAPS\Gaps\" + Branch + @" Gaps Download\" + String.Format("{0:yyyy}", dt) + @"\";
+            string sPath = Properties.Settings.Default.PathGAPS + Branch + @" Gaps Download\" + String.Format("{0:yyyy}", dt) + @"\";
             string sFile = Branch + " " + String.Format("{0:M-dd-yy}", dt) + ".xlsx";
+
+            if (!Directory.Exists(sPath))
+                Directory.CreateDirectory(sPath);
 
             try
             {
@@ -301,6 +305,127 @@ namespace SaveWorkbook
                 if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
                     System.Windows.Forms.MessageBox.Show(e.Message.ToString());
             }
+        }
+
+        private bool IsGaps()
+        {
+            #region List of GAPS Headers
+            string[] GapsHeaders = new string[99]
+            {
+                "Branch_id",
+                "Sim_mfr_no",
+                "Sim_item_no",
+                "buyerCode",
+                "Sim_description",
+                "Qty_on_hand",
+                "Qty_on_reserve",
+                "Qty_on_backorder",
+                "Qty_on_order",
+                "qty_on_consignment",
+                "Mtd_sales_qty",
+                "WESCOM_SLS1",
+                "WESCOM_SLS2",
+                "WESCOM_SLS3",
+                "WESCOM_SLS4",
+                "WESCOM_SLS5",
+                "WESCOM_SLS6",
+                "WESCOM_SLS7",
+                "WESCOM_SLS8",
+                "WESCOM_SLS9",
+                "WESCOM_SLS10",
+                "WESCOM_SLS11",
+                "WESCOM_SLS12",
+                "Order_review_point",
+                "Fixed_review_point",
+                "Basic_stock",
+                "Fixed_basic_stock",
+                "master_stock",
+                "WESCOM_QTY_BREAK_2",
+                "WESCOM_QTY_BREAK_3",
+                "Last_cost",
+                "Unit_Last_cost",
+                "average_cost",
+                "Unit_average_cost",
+                "Unit_of_measure_id",
+                "Wdc_qty_on_hand",
+                "Product_code",
+                "Supplier_no",
+                "WESCOM_Buyer_Code",
+                "Inventory_as_of",
+                "Date_Last_Changed",
+                "Date_Net_Stock_Decrease",
+                "Item_Note",
+                "DSS_data_as_of",
+                "country_code",
+                "Velocity_code",
+                "Class_code",
+                "WESCOM_Leadtime",
+                "start_date",
+                "end_date",
+                "lead_time",
+                "value_code",
+                "last_12_sls_qty",
+                "max_qty",
+                "one_ms_qty",
+                "rec_target_qty",
+                "except_status",
+                "sls_qty1",
+                "sls_qty2",
+                "sls_qty3",
+                "sls_qty4",
+                "sls_qty5",
+                "sls_qty6",
+                "sls_qty7",
+                "sls_qty8",
+                "sls_qty9",
+                "sls_qty10",
+                "sls_qty11",
+                "sls_qty12",
+                "sls_qty13",
+                "sls_qty14",
+                "sls_qty15",
+                "sls_qty16",
+                "sls_qty17",
+                "sls_qty18",
+                "sls_qty19",
+                "sls_qty20",
+                "sls_qty21",
+                "sls_qty22",
+                "sls_qty23",
+                "sls_qty24",
+                "Forecast1",
+                "Forecast2",
+                "Forecast3",
+                "Replacement_qty_break2",
+                "Replacement_qty_break3",
+                "mfr_name",
+                "Min_Purchase",
+                "Min_Freight",
+                "contact",
+                "phone",
+                "fax",
+                "rec_days",
+                "def_rec_days",
+                "Date_First_Receipt",
+                "Date_last_issued",
+                "Date_Created",
+                "Days_Supply",
+                "Wdc_rt_qty",
+            };
+            #endregion
+            int TotalCols = ActiveSheet.UsedRange.Columns.Count;
+            Excel.Range ReportHeaders = ActiveSheet.Range[ActiveSheet.Cells[1, 1], ActiveSheet.Cells[1, TotalCols]];
+
+            if (ReportHeaders.Columns.Count == GapsHeaders.Length)
+                for (int i = 0; i < GapsHeaders.Length; i++)
+                {
+                    if (ReportHeaders.Cells[1, i + 1].Value != GapsHeaders[i])
+                        return false;
+                }
+            else
+                return false;
+
+            return true;
         }
 
         #region Event_Handlers

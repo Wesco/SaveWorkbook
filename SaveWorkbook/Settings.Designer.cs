@@ -47,7 +47,7 @@
             this.lblGapsPath.Location = new System.Drawing.Point(8, 15);
             this.lblGapsPath.Name = "lblGapsPath";
             this.lblGapsPath.Size = new System.Drawing.Size(61, 13);
-            this.lblGapsPath.TabIndex = 2;
+            this.lblGapsPath.TabIndex = 99;
             this.lblGapsPath.Text = "GAPS Path";
             this.lblGapsPath.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
@@ -57,7 +57,7 @@
             this.lbl117Path.Location = new System.Drawing.Point(20, 41);
             this.lbl117Path.Name = "lbl117Path";
             this.lbl117Path.Size = new System.Drawing.Size(50, 13);
-            this.lbl117Path.TabIndex = 3;
+            this.lbl117Path.TabIndex = 100;
             this.lbl117Path.Text = "117 Path";
             this.lbl117Path.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
@@ -67,7 +67,7 @@
             this.lbl473Path.Location = new System.Drawing.Point(20, 67);
             this.lbl473Path.Name = "lbl473Path";
             this.lbl473Path.Size = new System.Drawing.Size(50, 13);
-            this.lbl473Path.TabIndex = 4;
+            this.lbl473Path.TabIndex = 101;
             this.lbl473Path.Text = "473 Path";
             this.lbl473Path.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
@@ -84,7 +84,7 @@
             this.txt117Path.Location = new System.Drawing.Point(79, 38);
             this.txt117Path.Name = "txt117Path";
             this.txt117Path.Size = new System.Drawing.Size(244, 20);
-            this.txt117Path.TabIndex = 6;
+            this.txt117Path.TabIndex = 3;
             this.txt117Path.Leave += new System.EventHandler(this.txt117Path_Leave);
             // 
             // txtGapsPath
@@ -92,7 +92,7 @@
             this.txtGapsPath.Location = new System.Drawing.Point(79, 12);
             this.txtGapsPath.Name = "txtGapsPath";
             this.txtGapsPath.Size = new System.Drawing.Size(244, 20);
-            this.txtGapsPath.TabIndex = 7;
+            this.txtGapsPath.TabIndex = 1;
             this.txtGapsPath.Leave += new System.EventHandler(this.txtGapsPath_Leave);
             // 
             // btnGapsBrowse
@@ -100,7 +100,7 @@
             this.btnGapsBrowse.Location = new System.Drawing.Point(329, 10);
             this.btnGapsBrowse.Name = "btnGapsBrowse";
             this.btnGapsBrowse.Size = new System.Drawing.Size(75, 23);
-            this.btnGapsBrowse.TabIndex = 9;
+            this.btnGapsBrowse.TabIndex = 2;
             this.btnGapsBrowse.Text = "Browse";
             this.btnGapsBrowse.UseVisualStyleBackColor = true;
             this.btnGapsBrowse.Click += new System.EventHandler(this.btnGapsBrowse_Click);
@@ -110,7 +110,7 @@
             this.btn117Browse.Location = new System.Drawing.Point(329, 36);
             this.btn117Browse.Name = "btn117Browse";
             this.btn117Browse.Size = new System.Drawing.Size(75, 23);
-            this.btn117Browse.TabIndex = 10;
+            this.btn117Browse.TabIndex = 4;
             this.btn117Browse.Text = "Browse";
             this.btn117Browse.UseVisualStyleBackColor = true;
             this.btn117Browse.Click += new System.EventHandler(this.btn117Browse_Click);
@@ -120,7 +120,7 @@
             this.btn473Browse.Location = new System.Drawing.Point(329, 62);
             this.btn473Browse.Name = "btn473Browse";
             this.btn473Browse.Size = new System.Drawing.Size(75, 23);
-            this.btn473Browse.TabIndex = 11;
+            this.btn473Browse.TabIndex = 6;
             this.btn473Browse.Text = "Browse";
             this.btn473Browse.UseVisualStyleBackColor = true;
             this.btn473Browse.Click += new System.EventHandler(this.btn473Browse_Click);
@@ -130,7 +130,7 @@
             this.btnCancel.Location = new System.Drawing.Point(329, 104);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 12;
+            this.btnCancel.TabIndex = 8;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -140,7 +140,7 @@
             this.btnSave.Location = new System.Drawing.Point(248, 104);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 13;
+            this.btnSave.TabIndex = 7;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
