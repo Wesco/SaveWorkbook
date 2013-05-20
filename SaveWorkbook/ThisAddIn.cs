@@ -33,7 +33,7 @@ namespace SaveWorkbook
 
             index = value.IndexOf(text, 0);
 
-            if (index > 0)
+            if (index >= 0)
                 return value.Substring(index, text.Length);
             else
                 return String.Empty;
@@ -71,7 +71,7 @@ namespace SaveWorkbook
         {
             string reptype;
 
-            if (!String.IsNullOrEmpty(ActiveSheet.Range["A1"].Value))
+            if (ActiveSheet.Range["A1"].Value != null)
             {
                 reptype = ((ActiveSheet.Range["A1"].Value).ToString().Replace(" ", String.Empty)).Substring(0, 3);
 
@@ -109,9 +109,11 @@ namespace SaveWorkbook
             int ISN = 0;
 
             //Filter the report type string to check if it is a back order report
-            if (!String.IsNullOrEmpty(ActiveSheet.Range["A1"].Value))
+            if (ActiveSheet.Range["A1"].Value != null)
             {
-                branch = (ActiveSheet.Range["A3"].Value).ToString();
+                if (ActiveSheet.Range["A3"].Value != null)
+                    branch = (ActiveSheet.Range["A3"].Value).ToString();
+
                 reportType[0] = (ActiveSheet.Range["A1"].Value).ToString();
                 reportType[1] = (ActiveSheet.Range["A1"].Value).ToString();
                 reportType[2] = (ActiveSheet.Range["A1"].Value).ToString();
