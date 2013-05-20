@@ -56,7 +56,7 @@
             this.group1.Items.Add(this.btnVMI);
             this.group1.Items.Add(this.separator1);
             this.group1.Items.Add(this.btnConfigure);
-            this.group1.Label = "Save Report";
+            this.group1.Label = "Save Workbook";
             this.group1.Name = "group1";
             // 
             // separator1
@@ -67,7 +67,7 @@
             // 
             this.btnSave.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnSave.Image = ((System.Drawing.Image)(resources.GetObject("btnSave.Image")));
-            this.btnSave.Label = "GAPs";
+            this.btnSave.Label = "Save Report";
             this.btnSave.Name = "btnSave";
             this.btnSave.ShowImage = true;
             this.btnSave.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSave_Click);
