@@ -12,19 +12,9 @@ namespace SaveWorkbook
 {
     public partial class rbnSaveReport
     {
-        private void btnGaps_Click(object sender, RibbonControlEventArgs e)
+        private void btnSave_Click(object sender, RibbonControlEventArgs e)
         {
-            App.thisAddin.SaveGAPS();
-        }
-
-        private void btnISN117_Click(object sender, RibbonControlEventArgs e)
-        {
-            App.thisAddin.SaveISN117();
-        }
-
-        private void btn473_Click(object sender, RibbonControlEventArgs e)
-        {
-            App.thisAddin.Save473();
+            App.thisAddin.SaveReport();
         }
 
         private void btnVMI_Click(object sender, RibbonControlEventArgs e)

@@ -15,6 +15,19 @@ namespace SaveWorkbook
         public static ThisAddIn thisAddin { get; set; }
     }
 
+    static class Extensions
+    {
+        public static string Right(this string value, int length)
+        {
+            return value.Substring(value.Length - length);
+        }
+
+        public static string Left(this string value, int length)
+        {
+            return value.Substring(0, length);
+        }
+    }
+
     public partial class ThisAddIn
     {
         private Excel.Worksheet sheet;
@@ -41,6 +54,31 @@ namespace SaveWorkbook
         private Excel.Sheets Sheets { get; set; }
         private Excel.Workbooks Workbooks { get; set; }
         private Excel.Workbook ThisWorkbook { get; set; }
+
+        public void SaveReport()
+        {
+            string reptype;
+
+            if (!String.IsNullOrEmpty(ActiveSheet.Range["A1"].Value))
+            {
+                reptype = ((ActiveSheet.Range["A1"].Value).ToString().Replace(" ", String.Empty)).Substring(0, 3);
+
+                switch (reptype)
+                {
+                    case "117":
+                        SaveISN117();
+                        break;
+
+                    case "473":
+                        Save473();
+                        break;
+
+                    case "Branch_id":
+                        SaveGAPS();
+                        break;
+                }
+            }
+        }
 
         public void SaveISN117()
         {

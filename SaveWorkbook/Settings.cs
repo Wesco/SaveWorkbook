@@ -44,6 +44,7 @@ namespace SaveWorkbook
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            
             if (IsValidPath(txt117Path.Text) & IsValidPath(txt473Path.Text) & IsValidPath(txtGapsPath.Text))
             {
                 Properties.Settings.Default.Path117 = txt117Path.Text;

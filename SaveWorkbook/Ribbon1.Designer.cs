@@ -37,10 +37,8 @@
             this.tab1 = this.Factory.CreateRibbonTab();
             this.group1 = this.Factory.CreateRibbonGroup();
             this.separator1 = this.Factory.CreateRibbonSeparator();
-            this.btnGaps = this.Factory.CreateRibbonButton();
+            this.btnSave = this.Factory.CreateRibbonButton();
             this.btnVMI = this.Factory.CreateRibbonButton();
-            this.btnISN117 = this.Factory.CreateRibbonButton();
-            this.btn473 = this.Factory.CreateRibbonButton();
             this.btnConfigure = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
@@ -54,10 +52,8 @@
             // 
             // group1
             // 
-            this.group1.Items.Add(this.btnGaps);
+            this.group1.Items.Add(this.btnSave);
             this.group1.Items.Add(this.btnVMI);
-            this.group1.Items.Add(this.btnISN117);
-            this.group1.Items.Add(this.btn473);
             this.group1.Items.Add(this.separator1);
             this.group1.Items.Add(this.btnConfigure);
             this.group1.Label = "Save Report";
@@ -67,14 +63,14 @@
             // 
             this.separator1.Name = "separator1";
             // 
-            // btnGaps
+            // btnSave
             // 
-            this.btnGaps.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnGaps.Image = ((System.Drawing.Image)(resources.GetObject("btnGaps.Image")));
-            this.btnGaps.Label = "GAPs";
-            this.btnGaps.Name = "btnGaps";
-            this.btnGaps.ShowImage = true;
-            this.btnGaps.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnGaps_Click);
+            this.btnSave.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnSave.Image = ((System.Drawing.Image)(resources.GetObject("btnSave.Image")));
+            this.btnSave.Label = "GAPs";
+            this.btnSave.Name = "btnSave";
+            this.btnSave.ShowImage = true;
+            this.btnSave.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSave_Click);
             // 
             // btnVMI
             // 
@@ -84,24 +80,6 @@
             this.btnVMI.Name = "btnVMI";
             this.btnVMI.ShowImage = true;
             this.btnVMI.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnVMI_Click);
-            // 
-            // btnISN117
-            // 
-            this.btnISN117.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnISN117.Image = ((System.Drawing.Image)(resources.GetObject("btnISN117.Image")));
-            this.btnISN117.Label = "117";
-            this.btnISN117.Name = "btnISN117";
-            this.btnISN117.ShowImage = true;
-            this.btnISN117.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnISN117_Click);
-            // 
-            // btn473
-            // 
-            this.btn473.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btn473.Image = ((System.Drawing.Image)(resources.GetObject("btn473.Image")));
-            this.btn473.Label = "473";
-            this.btn473.Name = "btn473";
-            this.btn473.ShowImage = true;
-            this.btn473.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btn473_Click);
             // 
             // btnConfigure
             // 
@@ -128,9 +106,7 @@
 
         internal Microsoft.Office.Tools.Ribbon.RibbonTab tab1;
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup group1;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnGaps;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnISN117;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btn473;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSave;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnVMI;
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator1;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnConfigure;
