@@ -70,7 +70,7 @@ namespace SaveWorkbook
         public void SaveReport()
         {
             string reptype;
-            
+
             if (!String.IsNullOrEmpty(ActiveSheet.Range["A1"].Value))
             {
                 reptype = ((ActiveSheet.Range["A1"].Value).ToString().Replace(" ", String.Empty)).Substring(0, 3);
@@ -78,7 +78,9 @@ namespace SaveWorkbook
                 switch (reptype)
                 {
                     case "117":
-                        SaveISN117();
+                        string type = (ActiveSheet.Range["A1"].Value).ToString().Replace(" ", String.Empty);
+                        if (type.Find("BYINSIDESALESPERSON") == "BYINSIDESALESPERSON")
+                            SaveISN117();
                         break;
 
                     case "473":
@@ -87,6 +89,10 @@ namespace SaveWorkbook
 
                     case "Branch_id":
                         SaveGAPS();
+                        break;
+
+                    default:
+                        System.Windows.Forms.MessageBox.Show("This report is not handled by this add-in.");
                         break;
                 }
             }
@@ -102,29 +108,23 @@ namespace SaveWorkbook
             string branch = "";
             string repType = "";
             int ISN = 0;
-            int index = 0;
 
             //Filter the report type string to check if it is a back order report
             if (!String.IsNullOrEmpty(ActiveSheet.Range["A1"].Value))
             {
                 branch = (ActiveSheet.Range["A3"].Value).ToString();
-                repType = (ActiveSheet.Range["A1"].Value).ToString().Replace(" ", String.Empty);
+                reportType[0] = (ActiveSheet.Range["A1"].Value).ToString();
+                reportType[1] = (ActiveSheet.Range["A1"].Value).ToString();
+                reportType[2] = (ActiveSheet.Range["A1"].Value).ToString();
 
-                if (repType.Find("BYINSIDESALESPERSON") == "BYINSIDESALESPERSON")
-                {
-                    reportType[0] = (ActiveSheet.Range["A1"].Value).ToString();
-                    reportType[1] = (ActiveSheet.Range["A1"].Value).ToString();
-                    reportType[2] = (ActiveSheet.Range["A1"].Value).ToString();
+                reportType[0] = reportType[0].Replace(" ", String.Empty);
+                reportType[0] = reportType[0].Substring(reportType[0].Length - 10);
 
-                    reportType[0] = reportType[0].Replace(" ", String.Empty);
-                    reportType[0] = reportType[0].Substring(reportType[0].Length - 10);
+                reportType[1] = reportType[1].Replace(" ", String.Empty);
+                reportType[1] = reportType[1].Substring(reportType[1].Length - 19);
 
-                    reportType[1] = reportType[1].Replace(" ", String.Empty);
-                    reportType[1] = reportType[1].Substring(reportType[1].Length - 19);
-
-                    reportType[2] = reportType[0].Replace(" ", String.Empty);
-                    reportType[2] = reportType[0].Substring(reportType[0].Length - 9);
-                }
+                reportType[2] = reportType[0].Replace(" ", String.Empty);
+                reportType[2] = reportType[0].Substring(reportType[0].Length - 9);
             }
 
             for (int i = 0; i < reportType.Count(); i++)
@@ -332,7 +332,7 @@ namespace SaveWorkbook
         #endregion
 
         #region AddIn_Events
-        
+
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
             App.thisAddin = this;
