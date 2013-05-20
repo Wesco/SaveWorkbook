@@ -25,7 +25,7 @@ namespace SaveWorkbook.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\\\\br3615gaps\\gaps\\3615 Gaps Download")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\br3615gaps\\gaps\\3615 Gaps Download\\")]
         public string PathGAPS {
             get {
                 return ((string)(this["PathGAPS"]));
@@ -37,7 +37,7 @@ namespace SaveWorkbook.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\\\\br3615gaps\\gaps\\3615 117 Report")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\br3615gaps\\gaps\\3615 117 Report\\")]
         public string Path117 {
             get {
                 return ((string)(this["Path117"]));
@@ -49,7 +49,7 @@ namespace SaveWorkbook.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\\\\br3615gaps\\gaps\\3615 473 Download")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\br3615gaps\\gaps\\3615 473 Download\\")]
         public string Path473 {
             get {
                 return ((string)(this["Path473"]));

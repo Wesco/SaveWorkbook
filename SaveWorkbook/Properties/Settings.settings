@@ -3,13 +3,13 @@
   <Profiles />
   <Settings>
     <Setting Name="PathGAPS" Type="System.String" Scope="User">
-      <Value Profile="(Default)">\\br3615gaps\gaps\3615 Gaps Download</Value>
+      <Value Profile="(Default)">\\br3615gaps\gaps\3615 Gaps Download\</Value>
     </Setting>
     <Setting Name="Path117" Type="System.String" Scope="User">
-      <Value Profile="(Default)">\\br3615gaps\gaps\3615 117 Report</Value>
+      <Value Profile="(Default)">\\br3615gaps\gaps\3615 117 Report\</Value>
     </Setting>
     <Setting Name="Path473" Type="System.String" Scope="User">
-      <Value Profile="(Default)">\\br3615gaps\gaps\3615 473 Download</Value>
+      <Value Profile="(Default)">\\br3615gaps\gaps\3615 473 Download\</Value>
     </Setting>
     <Setting Name="RemoveFile" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

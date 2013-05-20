@@ -128,7 +128,7 @@ namespace SaveWorkbook
 
         private bool IsValidPath(string path)
         {
-            Regex rxFilePath = new Regex(@"^(?:[A-Za-z]\:\\|\\\\[\w.]+\\)(?:[^\\ ][\w!@#$%^&()_+;'\.,  .]*\\)+$");
+            Regex rxFilePath = new Regex(@"^(?:[A-Za-z]\:\\|\\\\[\w.]+\\)(?:[^\\ ][\w!@#$%^&()_+;'\.,  .]*\\)*$");
             return rxFilePath.IsMatch(path);
         }
     }

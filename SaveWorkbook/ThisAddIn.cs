@@ -106,7 +106,6 @@ namespace SaveWorkbook
             string fileName;
             string[] reportType = new string[3];
             string branch = "";
-            string repType = "";
             int ISN = 0;
 
             //Filter the report type string to check if it is a back order report
@@ -137,9 +136,8 @@ namespace SaveWorkbook
 
                         if (ISN != 0)
                         {
-                            path = @"\\br3615gaps\gaps\3615 117 Report\ByInsideSalesNumber\" + ISN + @"\";
                             fileName = branch + " " + String.Format("{0:M-dd-yy}", dt) + " BACKORDERS" + ".xlsx";
-
+                            path = Properties.Settings.Default.Path117 + @"ByInsideSalesNumber\" + ISN + @"\";
                             if (!Directory.Exists(path))
                                 Directory.CreateDirectory(path);
 
@@ -153,7 +151,7 @@ namespace SaveWorkbook
 
                         if (ISN != 0)
                         {
-                            path = @"\\br3615gaps\gaps\3615 117 Report\ByInsideSalesNumber\" + ISN + @"\";
+                            path = Properties.Settings.Default.Path117 + @"ByInsideSalesNumber\" + ISN + @"\";
                             fileName = branch + " " + String.Format("{0:M-dd-yy}", dt) + " DSORDERS" + ".xlsx";
 
                             if (!Directory.Exists(path))
@@ -169,7 +167,7 @@ namespace SaveWorkbook
 
                         if (ISN != 0)
                         {
-                            path = @"\\br3615gaps\gaps\3615 117 Report\ByInsideSalesNumber\" + ISN + @"\";
+                            path = Properties.Settings.Default.Path117 + @"ByInsideSalesNumber\" + ISN + @"\";
                             fileName = branch + " " + String.Format("{0:M-dd-yy}", dt) + " ALLORDERS" + ".xlsx";
 
                             if (!Directory.Exists(path))
