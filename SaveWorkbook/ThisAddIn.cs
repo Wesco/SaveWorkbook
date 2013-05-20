@@ -26,6 +26,18 @@ namespace SaveWorkbook
         {
             return value.Substring(0, length);
         }
+
+        public static string Find(this string value, string text)
+        {
+            int index = 0;
+
+            index = value.IndexOf(text, 0);
+
+            if (index > 0)
+                return value.Substring(index, text.Length);
+            else
+                return String.Empty;
+        }
     }
 
     public partial class ThisAddIn
@@ -58,7 +70,7 @@ namespace SaveWorkbook
         public void SaveReport()
         {
             string reptype;
-
+            
             if (!String.IsNullOrEmpty(ActiveSheet.Range["A1"].Value))
             {
                 reptype = ((ActiveSheet.Range["A1"].Value).ToString().Replace(" ", String.Empty)).Substring(0, 3);
@@ -88,25 +100,31 @@ namespace SaveWorkbook
             string fileName;
             string[] reportType = new string[3];
             string branch = "";
+            string repType = "";
             int ISN = 0;
+            int index = 0;
 
             //Filter the report type string to check if it is a back order report
             if (!String.IsNullOrEmpty(ActiveSheet.Range["A1"].Value))
             {
                 branch = (ActiveSheet.Range["A3"].Value).ToString();
+                repType = (ActiveSheet.Range["A1"].Value).ToString().Replace(" ", String.Empty);
 
-                reportType[0] = (ActiveSheet.Range["A1"].Value).ToString();
-                reportType[1] = (ActiveSheet.Range["A1"].Value).ToString();
-                reportType[2] = (ActiveSheet.Range["A1"].Value).ToString();
+                if (repType.Find("BYINSIDESALESPERSON") == "BYINSIDESALESPERSON")
+                {
+                    reportType[0] = (ActiveSheet.Range["A1"].Value).ToString();
+                    reportType[1] = (ActiveSheet.Range["A1"].Value).ToString();
+                    reportType[2] = (ActiveSheet.Range["A1"].Value).ToString();
 
-                reportType[0] = reportType[0].Replace(" ", String.Empty);
-                reportType[0] = reportType[0].Substring(reportType[0].Length - 10);
+                    reportType[0] = reportType[0].Replace(" ", String.Empty);
+                    reportType[0] = reportType[0].Substring(reportType[0].Length - 10);
 
-                reportType[1] = reportType[1].Replace(" ", String.Empty);
-                reportType[1] = reportType[1].Substring(reportType[1].Length - 19);
+                    reportType[1] = reportType[1].Replace(" ", String.Empty);
+                    reportType[1] = reportType[1].Substring(reportType[1].Length - 19);
 
-                reportType[2] = reportType[0].Replace(" ", String.Empty);
-                reportType[2] = reportType[0].Substring(reportType[0].Length - 9);
+                    reportType[2] = reportType[0].Replace(" ", String.Empty);
+                    reportType[2] = reportType[0].Substring(reportType[0].Length - 9);
+                }
             }
 
             for (int i = 0; i < reportType.Count(); i++)
