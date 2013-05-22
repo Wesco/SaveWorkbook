@@ -141,6 +141,7 @@ namespace SaveWorkbook
             txt117Path.Text = Properties.Settings.Default.Path117;
             txt473Path.Text = Properties.Settings.Default.Path473;
             txtGapsPath.Text = Properties.Settings.Default.PathGAPS;
+            txt325Path.Text = Properties.Settings.Default.Path325;
         }
 
         private bool SetPath(out string path)
