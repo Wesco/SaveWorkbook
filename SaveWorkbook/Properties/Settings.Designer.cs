@@ -61,13 +61,13 @@ namespace SaveWorkbook.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool RemoveFile {
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\br3615gaps\\gaps\\3615 325 Download\\")]
+        public string Path325 {
             get {
-                return ((bool)(this["RemoveFile"]));
+                return ((string)(this["Path325"]));
             }
             set {
-                this["RemoveFile"] = value;
+                this["Path325"] = value;
             }
         }
     }

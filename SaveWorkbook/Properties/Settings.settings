@@ -11,8 +11,8 @@
     <Setting Name="Path473" Type="System.String" Scope="User">
       <Value Profile="(Default)">\\br3615gaps\gaps\</Value>
     </Setting>
-    <Setting Name="RemoveFile" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+    <Setting Name="Path325" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\\br3615gaps\gaps\3615 325 Download\</Value>
     </Setting>
   </Settings>
 </SettingsFile>

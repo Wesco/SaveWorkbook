@@ -42,19 +42,30 @@ namespace SaveWorkbook
                 txt473Path.Text = path;
         }
 
+        private void btn325Browse_Click(object sender, EventArgs e)
+        {
+            string path;
+
+            if (SetPath(out path))
+                txt325Path.Text = path;
+        }
+
         private void btnSave_Click(object sender, EventArgs e)
         {
-            
+
             if (IsValidPath(txt117Path.Text) & IsValidPath(txt473Path.Text) & IsValidPath(txtGapsPath.Text))
             {
                 if (IsValidPath(txt117Path.Text))
                     Properties.Settings.Default.Path117 = txt117Path.Text;
 
                 if (IsValidPath(txt473Path.Text))
-                Properties.Settings.Default.Path473 = txt473Path.Text;
+                    Properties.Settings.Default.Path473 = txt473Path.Text;
 
                 if (IsValidPath(txtGapsPath.Text))
-                Properties.Settings.Default.PathGAPS = txtGapsPath.Text;
+                    Properties.Settings.Default.PathGAPS = txtGapsPath.Text;
+
+                if (IsValidPath(txt325Path.Text))
+                    Properties.Settings.Default.Path325 = txt325Path.Text;
 
                 Properties.Settings.Default.Save();
                 this.Close();
@@ -105,6 +116,20 @@ namespace SaveWorkbook
             {
                 txt473Path.BackColor = Color.White;
                 Properties.Settings.Default.Path473 = txt473Path.Text;
+            }
+            else
+                txt473Path.BackColor = Color.LightPink;
+        }
+
+        private void txt325Path_Leave(object sender, EventArgs e)
+        {
+            if (txt325Path.Text.Right(1) != @"\")
+                txt325Path.Text += @"\";
+
+            if (IsValidPath(txt325Path.Text))
+            {
+                txt325Path.BackColor = Color.White;
+                Properties.Settings.Default.Path325 = txt473Path.Text;
             }
             else
                 txt473Path.BackColor = Color.LightPink;

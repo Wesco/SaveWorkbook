@@ -92,6 +92,10 @@ namespace SaveWorkbook
                             SaveGAPS();
                         break;
 
+                    case "SIM":
+                        Save325();
+                        break;
+
                     default:
                         System.Windows.Forms.MessageBox.Show("This report is not handled by this add-in.");
                         break;
@@ -270,6 +274,31 @@ namespace SaveWorkbook
                 //If error is not due to user canceled save display the error message
                 if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
                     System.Windows.Forms.MessageBox.Show(e.Message.ToString());
+            }
+        }
+
+        public void Save325()
+        {
+            DateTime dt = DateTime.Now;
+            string path = Properties.Settings.Default.Path325;
+            string fileName = String.Format("325 {0:M-dd-yy}.xlsx", dt);
+            string reportType = ActiveSheet.Range["A1"].Value;
+
+            if (reportType.Left(7) == "SIMLIST" && reportType.Replace(" ", String.Empty).Right(17) == "INVENTORYDOWNLOAD")
+            {
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                try
+                {
+                    ActiveWorkbook.SaveAs(path + fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+                }
+                catch (Exception e)
+                {
+                    //If error is not due to user canceled save display the error message
+                    if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
+                        System.Windows.Forms.MessageBox.Show(e.Message.ToString());
+                }
             }
         }
 
