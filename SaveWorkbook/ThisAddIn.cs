@@ -268,8 +268,9 @@ namespace SaveWorkbook
 
         public void SaveGAPS()
         {
+            DateTime dt = DateTime.Now;
             string Branch = (ActiveSheet.Range["A2"].Value).ToString();
-            string sPath = Properties.Settings.Default.PathGAPS + Branch + @" Gaps Download\" + Today() + @"\";
+            string sPath = Properties.Settings.Default.PathGAPS + Branch + @" Gaps Download\" + String.Format("{0:yyyy}", dt) + @"\";
             string sFile = Branch + " " + Today() + ".xlsx";
 
             if (!Directory.Exists(sPath))
