@@ -81,6 +81,8 @@ namespace SaveWorkbook
                         string type = (ActiveSheet.Range["A1"].Value).ToString().Replace(" ", String.Empty);
                         if (type.Find("BYINSIDESALESPERSON") == "BYINSIDESALESPERSON")
                             SaveISN117();
+                        if (type.Find("DETAILREPORTBYCUSTOMER") == "DETAILREPORTBYCUSTOMER")
+                            SaveCust117();
                         break;
 
                     case "473":
@@ -103,10 +105,22 @@ namespace SaveWorkbook
             }
         }
 
+        public void SaveCust117()
+        {
+            string type = (ActiveSheet.Range["A1"].Value).ToString();
+            string branch = (ActiveSheet.Range["A3"].Value).ToString();
+            string custNum = (ActiveSheet.Range["C3"].Value).ToString();
+            string fileName = branch + " " + Today() + " INQUIRY";
+            string savePath = Properties.Settings.Default.Path117 + branch + " 117 Report\\" + "ByCustomerNumber\\" + custNum + "\\";
+
+            if (type.Find("INQUIRIES") == "INQUIRIES")
+            {
+                SaveActiveBook(savePath, fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+            }
+        }
+
         public void SaveISN117()
         {
-            DateTime dt = DateTime.Now;
-
             string path;
             string fileName;
             string[] reportType = new string[3];
@@ -143,7 +157,7 @@ namespace SaveWorkbook
 
                         if (ISN != 0)
                         {
-                            fileName = branch + " " + String.Format("{0:M-dd-yy}", dt) + " BACKORDERS" + ".xlsx";
+                            fileName = branch + " " + Today() + " BACKORDERS" + ".xlsx";
                             path = Properties.Settings.Default.Path117 + branch + @" 117 Report\" + @"ByInsideSalesNumber\" + ISN + @"\";
                             if (!Directory.Exists(path))
                                 Directory.CreateDirectory(path);
@@ -159,7 +173,7 @@ namespace SaveWorkbook
                         if (ISN != 0)
                         {
                             path = Properties.Settings.Default.Path117 + branch + @" 117 Report\" + @"ByInsideSalesNumber\" + ISN + @"\";
-                            fileName = branch + " " + String.Format("{0:M-dd-yy}", dt) + " DSORDERS" + ".xlsx";
+                            fileName = branch + " " + Today() + " DSORDERS" + ".xlsx";
 
                             if (!Directory.Exists(path))
                                 Directory.CreateDirectory(path);
@@ -175,7 +189,7 @@ namespace SaveWorkbook
                         if (ISN != 0)
                         {
                             path = Properties.Settings.Default.Path117 + branch + @" 117 Report\" + @"ByInsideSalesNumber\" + ISN + @"\";
-                            fileName = branch + " " + String.Format("{0:M-dd-yy}", dt) + " ALLORDERS" + ".xlsx";
+                            fileName = branch + " " + Today() + " ALLORDERS" + ".xlsx";
 
                             if (!Directory.Exists(path))
                                 Directory.CreateDirectory(path);
@@ -189,8 +203,7 @@ namespace SaveWorkbook
 
         public void Save473()
         {
-            DateTime dt = DateTime.Now;
-            string fileName = "473 " + string.Format("{0:M-dd-yy}", dt) + ".xlsx";
+            string fileName = "473 " + Today() + ".xlsx";
             string reportType = (ActiveSheet.Range["A1"].Value).ToString();
             string branch = (ActiveSheet.Range["A3"].Value).ToString();
             string path = Properties.Settings.Default.Path473 + branch + @" 473 Download\";
@@ -255,10 +268,9 @@ namespace SaveWorkbook
 
         public void SaveGAPS()
         {
-            DateTime dt = DateTime.Now;
             string Branch = (ActiveSheet.Range["A2"].Value).ToString();
-            string sPath = Properties.Settings.Default.PathGAPS + Branch + @" Gaps Download\" + String.Format("{0:yyyy}", dt) + @"\";
-            string sFile = Branch + " " + String.Format("{0:M-dd-yy}", dt) + ".xlsx";
+            string sPath = Properties.Settings.Default.PathGAPS + Branch + @" Gaps Download\" + Today() + @"\";
+            string sFile = Branch + " " + Today() + ".xlsx";
 
             if (!Directory.Exists(sPath))
                 Directory.CreateDirectory(sPath);
@@ -279,9 +291,8 @@ namespace SaveWorkbook
 
         public void Save325()
         {
-            DateTime dt = DateTime.Now;
             string path = Properties.Settings.Default.Path325;
-            string fileName = String.Format("325 {0:M-dd-yy}.xlsx", dt);
+            string fileName = "325 " + Today() + ".xlsx";
             string reportType = ActiveSheet.Range["A1"].Value;
 
             if (reportType.Left(7) == "SIMLIST" && reportType.Replace(" ", String.Empty).Right(17) == "INVENTORYDOWNLOAD")
@@ -324,13 +335,30 @@ namespace SaveWorkbook
 
         private void SaveActiveBook(string Path, string FileName, Excel.XlFileFormat FileFormat)
         {
+            if (!Directory.Exists(Path))
+            {
+                try
+                {
+                    Directory.CreateDirectory(Path);
+                }
+                catch (Exception e)
+                {
+                    System.Windows.Forms.MessageBox.Show(e.Message.ToString());
+                }
+            }
+
             try
             {
-                ActiveWorkbook.SaveAs(Path + FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+                if (Directory.Exists(Path))
+                {
+                    Application.DisplayAlerts = false;
+                    ActiveWorkbook.SaveAs(Path + FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+                    Application.DisplayAlerts = true;
+                }
             }
-            catch (Exception e)
+            catch (System.Runtime.InteropServices.COMException e)
             {
-                //If error is not due to user canceled save display the error message
+                //If error is not due to user canceled save display the error 
                 if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
                     System.Windows.Forms.MessageBox.Show(e.Message.ToString());
             }
@@ -455,6 +483,17 @@ namespace SaveWorkbook
                 return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// Gets todays date and converts it into ISO 8601 compliant string.
+        /// </summary>
+        /// <returns>Todays date in yyyy-MM-dd format</returns>
+        private string Today()
+        {
+            DateTime dt = DateTime.Now;
+            string date = String.Format("{0:yyyy-MM-dd}", dt);
+            return date;
         }
 
         #region Event_Handlers
