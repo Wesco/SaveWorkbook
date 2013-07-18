@@ -98,6 +98,11 @@ namespace SaveWorkbook
                         Save325();
                         break;
 
+                    case "Sup":
+                        if (IsIROOR())
+                            SaveIROpenOrders();
+                        break;
+
                     default:
                         System.Windows.Forms.MessageBox.Show("This report is not handled by this add-in.");
                         break;
@@ -314,6 +319,14 @@ namespace SaveWorkbook
             }
         }
 
+        public void SaveIROpenOrders()
+        {
+            string FilePath = @"\\7938-HP02\Shared\IR order entry\IR macro for all plant order entry\IR Open Purchase Orders\";
+            string FileName = "Open POs " + Today() + ".xlsx";
+
+            SaveActiveBook(FilePath, FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+        }
+
         /// <summary>
         /// Finds the specified column and returns the column number.
         /// If no column is found then 0 is returned.
@@ -478,6 +491,47 @@ namespace SaveWorkbook
                 for (int i = 0; i < GapsHeaders.Length; i++)
                 {
                     if (ReportHeaders.Cells[1, i + 1].Value != GapsHeaders[i])
+                        return false;
+                }
+            else
+                return false;
+
+            return true;
+        }
+
+        private bool IsIROOR()
+        {
+            #region IR_OOR_Headers
+            string[] IR_OOR_Headers = new string[18]
+            {
+                "Supplier Code",
+                "Supplier Name",
+                "Location Name",
+                "PO Number",
+                "Line Number",
+                "PO Releases",
+                "IR Part Number",
+                "IR Part Description",
+                "Supplier Part Number",
+                "Order Date",
+                "Quantity Ordered",
+                "Quantity Received",
+                "Open Quantity",
+                "Performance Date",
+                "Actual Due Date",
+                "Currency Code",
+                "PO Price",
+                "Extended PO Price"
+            };
+            #endregion
+
+            int TotalCols = ActiveSheet.UsedRange.Columns.Count;
+            Excel.Range ReportHeaders = ActiveSheet.Range[ActiveSheet.Cells[4, 1], ActiveSheet.Cells[4, TotalCols]];
+
+            if (ReportHeaders.Columns.Count == IR_OOR_Headers.Length)
+                for (int i = 0; i < IR_OOR_Headers.Length; i++)
+                {
+                    if (ReportHeaders.Cells[1, i + 1].Value != IR_OOR_Headers[i])
                         return false;
                 }
             else
