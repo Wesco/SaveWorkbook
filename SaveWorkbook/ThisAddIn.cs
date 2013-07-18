@@ -7,6 +7,8 @@ using Excel = Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
 using Microsoft.Office.Tools.Excel;
 using System.IO;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace SaveWorkbook
 {
@@ -73,7 +75,21 @@ namespace SaveWorkbook
 
             if (ActiveSheet.Range["A1"].Value != null)
             {
-                reptype = ((ActiveSheet.Range["A1"].Value).ToString().Replace(" ", String.Empty)).Substring(0, 3);
+                int condition = (ActiveSheet.Range["A1"].Value).ToString().Length;
+
+                switch (condition)
+                {
+                    case 2:
+                        reptype = ((ActiveSheet.Range["A1"].Value).ToString().Replace(" ", String.Empty)).Substring(0, 2);
+                        break;
+
+                    default:
+                        if (condition > 2)
+                            reptype = ((ActiveSheet.Range["A1"].Value).ToString().Replace(" ", String.Empty)).Substring(0, 3);
+                        else
+                            reptype = "";
+                        break;
+                }
 
                 switch (reptype)
                 {
@@ -101,6 +117,14 @@ namespace SaveWorkbook
                     case "Sup":
                         if (IsIROOR())
                             SaveIROpenOrders();
+                        break;
+
+                    case "br":
+                        foreach (Excel.Worksheet w in ActiveWorkbook.Worksheets)
+                        {
+                            if (IsOpenAR(w))
+                                SaveOpenAR(w);
+                        }
                         break;
 
                     default:
@@ -327,6 +351,102 @@ namespace SaveWorkbook
             SaveActiveBook(FilePath, FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
         }
 
+        public void SaveOpenAR(Excel.Worksheet WS)
+        {
+            WS.AutoFilterMode = false;
+            WS.Columns[1].Insert();
+            WS.Range["A1"].Value = "UID";
+
+            int os_col = FindColumnHeader(1, "os_name", WS);
+            int inv_col = FindColumnHeader(1, "inv", WS);
+            int mfr_col = FindColumnHeader(1, "mfr", WS);
+            int itm_col = FindColumnHeader(1, "item", WS);
+            int sls_col = FindColumnHeader(1, "sales", WS);
+
+            int rows = WS.Range["C" + WS.Rows.Count].End[Excel.XlDirection.xlUp].Row + 1;
+            string dir = String.Empty;
+            string old_book = String.Empty;
+
+            if (os_col > 0 && inv_col > 0 && mfr_col > 0 && itm_col > 0 && sls_col > 0)
+            {
+                dir = @"\\7938-HP02\Shared\3615 Open AR\" + (WS.Cells[2, os_col].Value).ToString() + "\\";
+                        
+                InsertOpenAR_UID(WS, os_col, inv_col, mfr_col, itm_col, sls_col);
+
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                //Get old notes
+                for (int i = 0; i < 30; i++)
+                {
+                    old_book = WS.Name + " " + Today(-i) + ".xlsx";
+
+                    if (File.Exists(dir + old_book))
+                    {
+                        Excel.Workbook thisWB = ActiveWorkbook;
+                        Excel.Workbook wb = Workbooks.Open(dir + old_book);
+                        Excel.Worksheet s = wb.ActiveSheet;
+
+                        s.AutoFilterMode = false;
+                        s.Columns[1].Insert();
+                        s.Range["A1"].Value = "UID";
+
+                        os_col = FindColumnHeader(1, "os_name", s);
+                        inv_col = FindColumnHeader(1, "inv", s);
+                        mfr_col = FindColumnHeader(1, "mfr", s);
+                        itm_col = FindColumnHeader(1, "item", s);
+                        sls_col = FindColumnHeader(1, "sales", s);
+                        int note1_col = FindColumnHeader(1, "note 1", s);
+                        int note2_col = FindColumnHeader(1, "note 2", s);
+                        int last_col = WS.Range["ZZ1"].End[Excel.XlDirection.xlToLeft].Column;
+
+                        InsertOpenAR_UID(s, os_col, inv_col, mfr_col, itm_col, sls_col);
+
+                        if (note1_col > 0 && note2_col > 0)
+                        {
+                            WS.Cells[1, last_col + 1].Value = "note 1";
+                            WS.Cells[1, last_col + 2].Value = "note 2";
+
+                            string note1_lookup = "VLOOKUP(A2,'[" + wb.Name + "]" + s.Name + "'!A:ZZ," + note1_col + ",FALSE)";
+                            note1_lookup = "=IFERROR(IF(" + note1_lookup + "=0,\"\"," + note1_lookup + "),\"\")";
+
+                            string note2_lookup = "VLOOKUP(A2,'[" + wb.Name + "]" + s.Name + "'!A:ZZ," + note2_col + ",FALSE)";
+                            note2_lookup = "=IFERROR(IF(" + note2_lookup + "=0,\"\"," + note2_lookup + "),\"\")"; ;
+
+
+                            WS.Range[WS.Cells[2, last_col + 1], WS.Cells[rows, last_col + 1]].Formula = note1_lookup;
+                            WS.Range[WS.Cells[2, last_col + 2], WS.Cells[rows, last_col + 2]].Formula = note2_lookup;
+
+                            WS.Range[WS.Cells[2, last_col + 1], WS.Cells[rows, last_col + 1]].Value = WS.Range[WS.Cells[2, last_col + 1], WS.Cells[rows, last_col + 1]].Value;
+                            WS.Range[WS.Cells[2, last_col + 2], WS.Cells[rows, last_col + 2]].Value = WS.Range[WS.Cells[2, last_col + 2], WS.Cells[rows, last_col + 2]].Value;
+                        }
+                        wb.Saved = true;
+                        wb.Close();
+                        break;
+                    }
+                }
+
+                WS.Columns[1].Delete();
+                WS.Copy();
+                SaveActiveBook(dir, WS.Name + " " + Today(), Excel.XlFileFormat.xlOpenXMLWorkbook);
+                ActiveWorkbook.Close();
+            }
+        }
+
+        private void InsertOpenAR_UID(Excel.Worksheet WS, int os_col, int inv_col, int mfr_col, int itm_col, int sls_col)
+        {
+            int rows = WS.Range["C" + WS.Rows.Count].End[Excel.XlDirection.xlUp].Row + 1;
+
+            WS.Range[WS.Cells[2, 1], WS.Cells[rows, 1]].Formula = "=" +
+                WS.Cells[2, inv_col].Address(false, false) + "&" +
+                WS.Cells[2, mfr_col].Address(false, false) + "&" +
+                WS.Cells[2, itm_col].Address(false, false) + "&" +
+                WS.Cells[2, sls_col].Address(false, false);
+
+            WS.Range[WS.Cells[2, 1], WS.Cells[rows, 1]].NumberFormat = "@";
+            WS.Range[WS.Cells[2, 1], WS.Cells[rows, 1]].Value = WS.Range[WS.Cells[2, 1], WS.Cells[rows, 1]].Value;
+        }
+
         /// <summary>
         /// Finds the specified column and returns the column number.
         /// If no column is found then 0 is returned.
@@ -334,13 +454,17 @@ namespace SaveWorkbook
         /// <param name="row">The row containg column headers</param>
         /// <param name="text">The column header to search for</param>
         /// <returns></returns>
-        private int FindColumnHeader(int row, string text)
+        private int FindColumnHeader(int row, string text, Excel.Worksheet WS = null)
         {
-            for (int col = 1; col < ActiveSheet.UsedRange.Columns.Count; col++)
+            if (WS == null)
+                WS = ActiveSheet;
+
+            for (int col = 1; col < WS.UsedRange.Columns.Count; col++)
             {
-                if ((ActiveSheet.Cells[row, col].Value).ToString() == text)
+                if (WS.Cells[row, col].Value != null)
                 {
-                    return col;
+                    if ((WS.Cells[row, col].Value).ToString() == text)
+                        return col;
                 }
             }
 
@@ -540,14 +664,33 @@ namespace SaveWorkbook
             return true;
         }
 
+        private bool IsOpenAR(Excel.Worksheet WS)
+        {
+            var tabColor = WS.Tab.Color;
+            string varType = (tabColor.GetType()).ToString();
+            string varColor = (WS.Tab.Color).ToString();
+
+            if (tabColor.GetType() == typeof(Int32))
+            {
+                //If tab is yellow
+                if (tabColor == 65535)
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return false;
+
+        }
+
         /// <summary>
         /// Gets todays date and converts it into ISO 8601 compliant string.
         /// </summary>
         /// <returns>Todays date in yyyy-MM-dd format</returns>
-        private string Today()
+        private string Today(int DayOffset = 0)
         {
             DateTime dt = DateTime.Now;
-            string date = String.Format("{0:yyyy-MM-dd}", dt);
+            string date = String.Format("{0:yyyy-MM-dd}", dt.AddDays(DayOffset));
             return date;
         }
 
