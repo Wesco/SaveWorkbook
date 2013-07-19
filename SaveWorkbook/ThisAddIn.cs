@@ -44,14 +44,16 @@ namespace SaveWorkbook
 
     public partial class ThisAddIn
     {
-        private Excel.Worksheet sheet;
+        private Excel.Worksheet activeSheet;
+        private Excel.Workbook activeBook;
+
         private Excel.Worksheet ActiveSheet
         {
             get
             {
-                if (sheet != null)
+                if (activeSheet != null)
                 {
-                    return sheet;
+                    return activeSheet;
                 }
                 else
                 {
@@ -61,10 +63,28 @@ namespace SaveWorkbook
 
             set
             {
-                sheet = value;
+                activeSheet = value;
             }
         }
-        private Excel.Workbook ActiveWorkbook { get; set; }
+        private Excel.Workbook ActiveWorkbook
+        {
+            get
+            {
+                if (activeBook != null)
+                {
+                    return activeBook;
+                }
+                else
+                {
+                    return Application.ActiveWorkbook;
+                }
+            }
+
+            set
+            {
+                activeBook = value;
+            }
+        }
         private Excel.Sheets Sheets { get; set; }
         private Excel.Workbooks Workbooks { get; set; }
         private Excel.Workbook ThisWorkbook { get; set; }
@@ -77,19 +97,10 @@ namespace SaveWorkbook
             {
                 int condition = (ActiveSheet.Range["A1"].Value).ToString().Length;
 
-                switch (condition)
-                {
-                    case 2:
-                        reptype = ((ActiveSheet.Range["A1"].Value).ToString().Replace(" ", String.Empty)).Substring(0, 2);
-                        break;
-
-                    default:
-                        if (condition > 2)
-                            reptype = ((ActiveSheet.Range["A1"].Value).ToString().Replace(" ", String.Empty)).Substring(0, 3);
-                        else
-                            reptype = "";
-                        break;
-                }
+                if (condition > 2)
+                    reptype = ((ActiveSheet.Range["A1"].Value).ToString().Replace(" ", String.Empty)).Substring(0, 3);
+                else
+                    reptype = String.Empty;
 
                 switch (reptype)
                 {
@@ -119,18 +130,14 @@ namespace SaveWorkbook
                             SaveIROpenOrders();
                         break;
 
-                    case "br":
-                        foreach (Excel.Worksheet w in ActiveWorkbook.Worksheets)
-                        {
-                            if (IsOpenAR(w))
-                                SaveOpenAR(w);
-                        }
-                        break;
-
                     default:
                         System.Windows.Forms.MessageBox.Show("This report is not handled by this add-in.");
                         break;
                 }
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("The report type could not be determined.");
             }
         }
 
@@ -351,7 +358,21 @@ namespace SaveWorkbook
             SaveActiveBook(FilePath, FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
         }
 
-        public void SaveOpenAR(Excel.Worksheet WS)
+        public void SaveOAR()
+        {
+            foreach (Excel.Worksheet WS in ActiveWorkbook.Worksheets)
+            {
+                if (IsOpenAR(WS))
+                    SaveOAR_Sheet(WS);
+            }
+
+            //Mark the workbook as saved.
+            //All changes made during the previous process were removed from the source book
+            ActiveWorkbook.Saved = true;
+        }
+
+
+        private void SaveOAR_Sheet(Excel.Worksheet WS)
         {
             WS.AutoFilterMode = false;
             WS.Columns[1].Insert();
@@ -362,6 +383,9 @@ namespace SaveWorkbook
             int mfr_col = FindColumnHeader(1, "mfr", WS);
             int itm_col = FindColumnHeader(1, "item", WS);
             int sls_col = FindColumnHeader(1, "sales", WS);
+            int note1_col = 0;
+            int note2_col = 0;
+            int last_col = 0;
 
             int rows = WS.Range["C" + WS.Rows.Count].End[Excel.XlDirection.xlUp].Row + 1;
             string dir = String.Empty;
@@ -370,7 +394,7 @@ namespace SaveWorkbook
             if (os_col > 0 && inv_col > 0 && mfr_col > 0 && itm_col > 0 && sls_col > 0)
             {
                 dir = @"\\7938-HP02\Shared\3615 Open AR\" + (WS.Cells[2, os_col].Value).ToString() + "\\";
-                        
+
                 InsertOpenAR_UID(WS, os_col, inv_col, mfr_col, itm_col, sls_col);
 
                 if (!Directory.Exists(dir))
@@ -396,9 +420,9 @@ namespace SaveWorkbook
                         mfr_col = FindColumnHeader(1, "mfr", s);
                         itm_col = FindColumnHeader(1, "item", s);
                         sls_col = FindColumnHeader(1, "sales", s);
-                        int note1_col = FindColumnHeader(1, "note 1", s);
-                        int note2_col = FindColumnHeader(1, "note 2", s);
-                        int last_col = WS.Range["ZZ1"].End[Excel.XlDirection.xlToLeft].Column;
+                        note1_col = FindColumnHeader(1, "note 1", s);
+                        note2_col = FindColumnHeader(1, "note 2", s);
+                        last_col = WS.Range["ZZ1"].End[Excel.XlDirection.xlToLeft].Column;
 
                         InsertOpenAR_UID(s, os_col, inv_col, mfr_col, itm_col, sls_col);
 
@@ -420,16 +444,34 @@ namespace SaveWorkbook
                             WS.Range[WS.Cells[2, last_col + 1], WS.Cells[rows, last_col + 1]].Value = WS.Range[WS.Cells[2, last_col + 1], WS.Cells[rows, last_col + 1]].Value;
                             WS.Range[WS.Cells[2, last_col + 2], WS.Cells[rows, last_col + 2]].Value = WS.Range[WS.Cells[2, last_col + 2], WS.Cells[rows, last_col + 2]].Value;
                         }
+                        else
+                        {
+                            last_col = WS.Columns[WS.Columns.Count].End[Excel.XlDirection.xlToLeft].Column;
+                            WS.Cells[1, last_col + 1].Value = "note 1";
+                            WS.Cells[1, last_col + 2].Value = "note 2";
+                        }
+
                         wb.Saved = true;
                         wb.Close();
                         break;
                     }
                 }
-
+                //Delete the UID lookup column
                 WS.Columns[1].Delete();
                 WS.Copy();
                 SaveActiveBook(dir, WS.Name + " " + Today(), Excel.XlFileFormat.xlOpenXMLWorkbook);
                 ActiveWorkbook.Close();
+
+                if (note1_col > 0 && note2_col > 0)
+                {
+                    //Decrement note columns since the first column was removed earlier
+                    note1_col--;
+                    note2_col--;
+
+                    //Remove note columns from the original document
+                    WS.Columns[note2_col].Delete();
+                    WS.Columns[note1_col].Delete();
+                }
             }
         }
 
@@ -667,30 +709,27 @@ namespace SaveWorkbook
         private bool IsOpenAR(Excel.Worksheet WS)
         {
             var tabColor = WS.Tab.Color;
-            string varType = (tabColor.GetType()).ToString();
-            string varColor = (WS.Tab.Color).ToString();
 
+            //If a color was retrieved
             if (tabColor.GetType() == typeof(Int32))
             {
-                //If tab is yellow
+                //If the color is yellow
                 if (tabColor == 65535)
                     return true;
-                else
-                    return false;
             }
-            else
-                return false;
 
+            return false;
         }
 
         /// <summary>
-        /// Gets todays date and converts it into ISO 8601 compliant string.
+        /// Gets today plus X number of days and converts it into ISO 8601 compliant string.
         /// </summary>
+        /// <param name="Days"></param>
         /// <returns>Todays date in yyyy-MM-dd format</returns>
-        private string Today(int DayOffset = 0)
+        private string Today(int Days = 0)
         {
             DateTime dt = DateTime.Now;
-            string date = String.Format("{0:yyyy-MM-dd}", dt.AddDays(DayOffset));
+            string date = String.Format("{0:yyyy-MM-dd}", dt.AddDays(Days));
             return date;
         }
 
@@ -720,10 +759,14 @@ namespace SaveWorkbook
             Sheets = Application.ActiveWorkbook.Sheets;
             Workbooks = Application.Workbooks;
         }
+
+        void Application_WorkbookBeforeClose(Excel.Workbook Wb, ref bool Cancel)
+        {
+            ActiveWorkbook = null;
+        }
         #endregion
 
         #region AddIn_Events
-
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
             App.thisAddin = this;
@@ -731,6 +774,8 @@ namespace SaveWorkbook
             Application.SheetActivate += Application_SheetActivate;
             Application.WorkbookOpen += Application_WorkbookOpen;
             Application.WorkbookNewSheet += Application_WorkbookNewSheet;
+            Application.WorkbookBeforeClose += Application_WorkbookBeforeClose;
+
             ActiveWorkbook = Application.ActiveWorkbook;
             ActiveSheet = Application.ActiveSheet;
         }
