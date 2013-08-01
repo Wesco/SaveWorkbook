@@ -9,6 +9,7 @@ using Microsoft.Office.Tools.Excel;
 using System.IO;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace SaveWorkbook
 {
@@ -391,6 +392,10 @@ namespace SaveWorkbook
             string dir = String.Empty;
             string old_book = String.Empty;
 
+            if (WS.Name == "3615 claim")
+                MessageBox.Show("3615 claim!");
+
+
             if (os_col > 0 && inv_col > 0 && mfr_col > 0 && itm_col > 0 && sls_col > 0)
             {
                 dir = @"\\7938-HP02\Shared\3615 Open AR\" + (WS.Cells[2, os_col].Value).ToString() + "\\";
@@ -426,18 +431,22 @@ namespace SaveWorkbook
 
                         InsertOpenAR_UID(s, os_col, inv_col, mfr_col, itm_col, sls_col);
 
+                        //If note columns are found on the old sheet import
+                        //them to the current workbook using a vlookup
                         if (note1_col > 0 && note2_col > 0)
                         {
+                            //Create note 1 & note 2 column headers
                             WS.Cells[1, last_col + 1].Value = "note 1";
                             WS.Cells[1, last_col + 2].Value = "note 2";
 
+                            //Create vlookup string
                             string note1_lookup = "VLOOKUP(A2,'[" + wb.Name + "]" + s.Name + "'!A:ZZ," + note1_col + ",FALSE)";
                             note1_lookup = "=IFERROR(IF(" + note1_lookup + "=0,\"\"," + note1_lookup + "),\"\")";
 
                             string note2_lookup = "VLOOKUP(A2,'[" + wb.Name + "]" + s.Name + "'!A:ZZ," + note2_col + ",FALSE)";
                             note2_lookup = "=IFERROR(IF(" + note2_lookup + "=0,\"\"," + note2_lookup + "),\"\")"; ;
 
-
+                            //Lookup old notes
                             WS.Range[WS.Cells[2, last_col + 1], WS.Cells[rows, last_col + 1]].Formula = note1_lookup;
                             WS.Range[WS.Cells[2, last_col + 2], WS.Cells[rows, last_col + 2]].Formula = note2_lookup;
 
@@ -460,6 +469,7 @@ namespace SaveWorkbook
                 WS.Columns[1].Delete();
                 WS.Copy();
                 SaveActiveBook(dir, WS.Name + " " + Today(), Excel.XlFileFormat.xlOpenXMLWorkbook);
+                ActiveWorkbook.Saved = true;
                 ActiveWorkbook.Close();
 
                 if (note1_col > 0 && note2_col > 0)
@@ -715,7 +725,13 @@ namespace SaveWorkbook
             {
                 //If the color is yellow
                 if (tabColor == 65535)
+                {
                     return true;
+                }
+                else if(tabColor == 255)
+                {
+                    return true;
+                }
             }
 
             return false;

@@ -37,10 +37,11 @@
             this.tab1 = this.Factory.CreateRibbonTab();
             this.group1 = this.Factory.CreateRibbonGroup();
             this.btnSave = this.Factory.CreateRibbonButton();
+            this.btnSaveOAR = this.Factory.CreateRibbonButton();
             this.btnVMI = this.Factory.CreateRibbonButton();
             this.separator1 = this.Factory.CreateRibbonSeparator();
             this.btnConfigure = this.Factory.CreateRibbonButton();
-            this.btnSaveOAR = this.Factory.CreateRibbonButton();
+            this.separator2 = this.Factory.CreateRibbonSeparator();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             // 
@@ -54,6 +55,7 @@
             // group1
             // 
             this.group1.Items.Add(this.btnSave);
+            this.group1.Items.Add(this.separator2);
             this.group1.Items.Add(this.btnSaveOAR);
             this.group1.Items.Add(this.btnVMI);
             this.group1.Items.Add(this.separator1);
@@ -69,6 +71,15 @@
             this.btnSave.Name = "btnSave";
             this.btnSave.ShowImage = true;
             this.btnSave.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSave_Click);
+            // 
+            // btnSaveOAR
+            // 
+            this.btnSaveOAR.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnSaveOAR.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveOAR.Image")));
+            this.btnSaveOAR.Label = "Open AR";
+            this.btnSaveOAR.Name = "btnSaveOAR";
+            this.btnSaveOAR.ShowImage = true;
+            this.btnSaveOAR.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSaveOAR_Click);
             // 
             // btnVMI
             // 
@@ -92,14 +103,9 @@
             this.btnConfigure.ShowImage = true;
             this.btnConfigure.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnConfigure_Click);
             // 
-            // btnSaveOAR
+            // separator2
             // 
-            this.btnSaveOAR.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnSaveOAR.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveOAR.Image")));
-            this.btnSaveOAR.Label = "Save Open AR";
-            this.btnSaveOAR.Name = "btnSaveOAR";
-            this.btnSaveOAR.ShowImage = true;
-            this.btnSaveOAR.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSaveOAR_Click);
+            this.separator2.Name = "separator2";
             // 
             // rbnSaveReport
             // 
@@ -122,6 +128,7 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator1;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnConfigure;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSaveOAR;
+        internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator2;
     }
 
     partial class ThisRibbonCollection
