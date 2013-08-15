@@ -10,6 +10,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using MessageBox = System.Windows.Forms.MessageBox;
+using System.Globalization;
 
 namespace SaveWorkbook
 {
@@ -216,18 +217,23 @@ namespace SaveWorkbook
         public void Save117()
         {
             string SavePath = String.Empty;
-            string ReportCriteria = String.Empty;
-            string ReportSequence = String.Empty;
+            string FileName = String.Empty;
+            string Criteria = String.Empty;
+            string Sequence = String.Empty;
             string DetailSummary = String.Empty;
-            string Branch = ActiveSheet.Range["A3"].GetValue().ToString();
-            string Identifier = ActiveSheet.Range["A1"].GetValue().ToString().SingleSpace().Trim().ToLower();
+            string Branch = GetString(ActiveSheet.Range["A3"]);
+            string Identifier = GetString(ActiveSheet.Range["A1"]).SingleSpace().Trim();
+            int ByIndex = 0;
+            int ForIndex = 0;
+            TextInfo txtInfo = new CultureInfo("en-US", false).TextInfo;
+
 
             //Check if report is a detailed or summary report
-            if (Identifier.Contains("summary report"))
+            if (Identifier.Contains("SUMMARY REPORT"))
             {
                 DetailSummary = "SUMMARY";
             }
-            else if (Identifier.Contains("detail report"))
+            else if (Identifier.Contains("DETAIL REPORT"))
             {
                 DetailSummary = "DETAIL";
             }
@@ -237,11 +243,116 @@ namespace SaveWorkbook
                 return;
             }
 
-            //Report sequence
+            //Get report sequence
+            ByIndex = Identifier.IndexOf("BY");
+            ForIndex = Identifier.IndexOf("FOR");
 
+            try
+            {
+                Sequence = txtInfo.ToTitleCase(Identifier.Substring(ByIndex, ForIndex - ByIndex).ToLower()).Replace(" ", "");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Report Sequence - Error");
+                return;
+            }
 
+            //Get report criteria
+            try
+            {
+                Criteria = Identifier.Right(Identifier.Length - ForIndex - 4);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Report Criteria - Error");
+                return;
+            }
 
-            SavePath = Properties.Settings.Default.Path117 + Branch + " 117 Report\\";
+            switch (Sequence)
+            {
+                case "ByCustomer":
+                    break;
+
+                case "ByOrderDate":
+                    break;
+
+                case "BySimNumber":
+                    break;
+
+                case "ByGrossMargin":
+                    break;
+
+                case "ByOrderTotal":
+                    break;
+
+                case "ByInsideSalesperson":
+                    string ISN = GetString(ActiveSheet.Cells[3, FindColumnHeader(2, "IN")]);
+
+                    if (ISN != String.Empty)
+                    {
+                        SavePath = Properties.Settings.Default.Path117 + Branch + " 117 Report\\" + Sequence + "\\" + ISN + "\\";
+                    }
+                    else
+                    {
+                        MessageBox.Show("Unable to find inside sales number.", "Sequence ByISN - Error");
+                        return;
+                    }
+                    break;
+
+                case "ByOutsideSalesperson":
+                    break;
+
+                default:
+                    MessageBox.Show(RepNotHandled, "Sequence Default - Error");
+                    return;
+            }
+
+            #region Criteria
+            switch (Criteria)
+            {
+                case "ALL ORDERS":
+                    break;
+
+                case "BACK ORDERS":
+                    break;
+
+                //Contract Orders not handled
+
+                case "DIRECT SHIPPED ORDERS":
+                    break;
+
+                case "INQUIRIES":
+                    break;
+
+                case "CREDIT MEMOS":
+                    break;
+
+                //New Orders (Entered Not Picked) not handled
+
+                case "OPEN PICK TICKETS":
+                    break;
+
+                case "ORDERS SHIPPED BUT NOT INVOICED":
+                    break;
+
+                case "UNRELEASED ORDERS":
+                    break;
+
+                //Blanket Orders Held Pendign Review not handled
+
+                case "SPECIAL ORDERS":
+                    break;
+
+                case "ASSEMBLE AND HOLD ORDERS":
+                    break;
+
+                default:
+                    MessageBox.Show(RepNotHandled, "Criteria Default - Error");
+                    return;
+            }
+            #endregion
+
+            SavePath = Properties.Settings.Default.Path117 + Branch + " 117 Report\\" + Sequence + "\\";
         }
 
         private bool Is117()
@@ -884,6 +995,18 @@ namespace SaveWorkbook
             DateTime dt = DateTime.Now;
             string date = String.Format("{0:yyyy-MM-dd}", dt.AddDays(Days));
             return date;
+        }
+
+        public string GetString(Excel.Range value)
+        {
+            string Result;
+
+            if (value.Value == null)
+                Result = String.Empty;
+            else
+                Result = (value.Value).ToString();
+
+            return Result;
         }
 
         #region Event_Handlers

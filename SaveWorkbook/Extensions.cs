@@ -30,14 +30,6 @@ namespace SaveWorkbook
                 return String.Empty;
         }
 
-        public static Range GetValue(this Range value)
-        {
-            if (value.Value == null)
-                value.Value = String.Empty;
-
-            return value;
-        }
-
         public static string RemoveWhiteSpace(this string value)
         {
             value = value.Replace((char)0xA0, ' ');
