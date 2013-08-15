@@ -18,31 +18,6 @@ namespace SaveWorkbook
         public static ThisAddIn thisAddin { get; set; }
     }
 
-    static class Extensions
-    {
-        public static string Right(this string value, int length)
-        {
-            return value.Substring(value.Length - length);
-        }
-
-        public static string Left(this string value, int length)
-        {
-            return value.Substring(0, length);
-        }
-
-        public static string Find(this string value, string text)
-        {
-            int index = 0;
-
-            index = value.IndexOf(text, 0);
-
-            if (index >= 0)
-                return value.Substring(index, text.Length);
-            else
-                return String.Empty;
-        }
-    }
-
     public partial class ThisAddIn
     {
         private Excel.Worksheet activeSheet;
@@ -90,6 +65,8 @@ namespace SaveWorkbook
         private Excel.Workbooks Workbooks { get; set; }
         private Excel.Workbook ThisWorkbook { get; set; }
 
+        private const string RepNotHandled = "This report is not handled by this add-in.";
+
         public void SaveReport()
         {
             string reptype;
@@ -106,11 +83,8 @@ namespace SaveWorkbook
                 switch (reptype)
                 {
                     case "117":
-                        string type = (ActiveSheet.Range["A1"].Value).ToString().Replace(" ", String.Empty);
-                        if (type.Find("BYINSIDESALESPERSON") == "BYINSIDESALESPERSON")
-                            SaveISN117();
-                        if (type.Find("DETAILREPORTBYCUSTOMER") == "DETAILREPORTBYCUSTOMER")
-                            SaveCust117();
+                        if (Is117())
+                            Save117();
                         break;
 
                     case "473":
@@ -132,7 +106,7 @@ namespace SaveWorkbook
                         break;
 
                     default:
-                        System.Windows.Forms.MessageBox.Show("This report is not handled by this add-in.");
+                        MessageBox.Show(RepNotHandled);
                         break;
                 }
             }
@@ -142,6 +116,7 @@ namespace SaveWorkbook
             }
         }
 
+        #region 117
         public void SaveCust117()
         {
             string type = (ActiveSheet.Range["A1"].Value).ToString();
@@ -237,6 +212,169 @@ namespace SaveWorkbook
                 }
             }
         }
+
+        public void Save117()
+        {
+            string SavePath = String.Empty;
+            string ReportCriteria = String.Empty;
+            string ReportSequence = String.Empty;
+            string DetailSummary = String.Empty;
+            string Branch = ActiveSheet.Range["A3"].GetValue().ToString();
+            string Identifier = ActiveSheet.Range["A1"].GetValue().ToString().SingleSpace().Trim().ToLower();
+
+            //Check if report is a detailed or summary report
+            if (Identifier.Contains("summary report"))
+            {
+                DetailSummary = "SUMMARY";
+            }
+            else if (Identifier.Contains("detail report"))
+            {
+                DetailSummary = "DETAIL";
+            }
+            else
+            {
+                MessageBox.Show(RepNotHandled);
+                return;
+            }
+
+            //Report sequence
+
+
+
+            SavePath = Properties.Settings.Default.Path117 + Branch + " 117 Report\\";
+        }
+
+        private bool Is117()
+        {
+            string[] ColHeaders = new string[0];
+            string Identifier = String.Empty;
+            int TotalCols = ActiveSheet.UsedRange.Columns.Count;
+            Excel.Range ReportHeaders = ActiveSheet.Range[ActiveSheet.Cells[1, 1], ActiveSheet.Cells[1, TotalCols]];
+
+            //Get the report identifier string in A1
+            if (ActiveSheet.Range["A1"].Value != null)
+            {
+                Identifier = (ActiveSheet.Range["A1"].Value).ToString();
+                Identifier = Identifier.Replace(" ", String.Empty);
+                Identifier = Identifier.Replace("\t", String.Empty);
+            }
+            else
+                return false;
+
+            //Check the identifier string for the report type
+            if (Identifier.Contains("SUMMARYREPORT") && Identifier.Contains("117"))
+                #region Summary Column Headers
+                ColHeaders = new string[21]
+                {
+                    "WAREHOUSE",
+                    "ERROR",
+                    "CUSTOMER",
+                    "SHIP TO",
+                    "CUSTOMER NAME",
+                    "CUSTOMER REFERENCE NO",
+                    "CUSTOMER PART NUMBER",
+                    "ORDER DATE",
+                    "ORDER NO",
+                    "CYCLE",
+                    "TYPE",
+                    "STATUS",
+                    "SHIP COMPLETE",
+                    "ORDER AMOUNT",
+                    "IN",
+                    "OUT",
+                    "STATUS DESCRIPTION",
+                    "SUSPENSION TYPE",
+                    "EXT COST",
+                    "EXT MARGIN $",
+                    "QUOTED TO"
+                };
+                #endregion
+            else if (Identifier.Contains("DETAILREPORT") && Identifier.Contains("117"))
+                #region DetailColHeaders
+                ColHeaders = new string[62] 
+                {
+                    "WAREHOUSE",
+                    "ERROR",
+                    "CUSTOMER",
+                    "ORDER NO",
+                    "REMOTE ORDER",
+                    "CYCLE",
+                    "STATUS",
+                    "ORDER DATE",
+                    "TAX",
+                    "TAX ACCOUNT",
+                    "REQUIRED DATE (HR)",
+                    "CUSTOMER REFERENCE NO",
+                    "CUST PO LINE #",
+                    "CUSTOMER PART NUMBER",
+                    "SHIP TO",
+                    "IN",
+                    "OUT",
+                    "LINE NO",
+                    "KIT",
+                    "TYPE",
+                    "ITEM NUMBER",
+                    "CATALOG NUMBER",
+                    "ITEM DESCRIPTION",
+                    "SUOM",
+                    "ORDER QTY",
+                    "AVAILABLE QTY",
+                    "QTY TO SHIP",
+                    "BO QTY",
+                    "QTY SHIPPED",
+                    "GROSS MARGIN",
+                    "LPST",
+                    "LGST",
+                    "UNIT PRICE",
+                    "DISCOUNT",
+                    "REQUIRED DATE (LI)",
+                    "EXTENSION",
+                    "SHIP DATE",
+                    "SHIP COMPLETE",
+                    "PO NUMBER",
+                    "PROMISE DATE",
+                    "OLD PROMISE DATE",
+                    "PO LINE NUM",
+                    "SUPPLIER NUM",
+                    "PURCHASE DATE",
+                    "WIK QTY",
+                    "WIP QTY",
+                    "WIT QTY",
+                    "CUSTOMER NAME",
+                    "CUSTOMER ADDRESS 1",
+                    "CUSTOMER ADDRESS 2",
+                    "CUSTOMER CITY",
+                    "CUSTOMER STATE",
+                    "TRACK ID",
+                    "PALLET",
+                    "BOX",
+                    "QTY",
+                    "SUSPENSION TYPE",
+                    "COST",
+                    "EXT COST",
+                    "MARGIN $",
+                    "EXT MARGIN $",
+                    "QUOTED TO"
+                };
+                #endregion
+            else
+                return false;
+
+            //Verify the report type by checking the column headers
+            if (TotalCols == ColHeaders.Length)
+            {
+                for (int i = 0; i < ColHeaders.Length; i++)
+                {
+                    if (ReportHeaders.Cells[2, i + 1].Value.ToString().Trim() != ColHeaders[i])
+                        return false;
+                }
+            }
+            else
+                return false;
+
+            return true;
+        }
+        #endregion
 
         public void Save473()
         {
@@ -371,7 +509,6 @@ namespace SaveWorkbook
             //All changes made during the previous process were removed from the source book
             ActiveWorkbook.Saved = true;
         }
-
 
         private void SaveOAR_Sheet(Excel.Worksheet WS)
         {
@@ -728,7 +865,7 @@ namespace SaveWorkbook
                 {
                     return true;
                 }
-                else if(tabColor == 255)
+                else if (tabColor == 255)
                 {
                     return true;
                 }
