@@ -216,32 +216,30 @@ namespace SaveWorkbook
 
         public void Save117()
         {
-            string SavePath = String.Empty;
-            string FileName = String.Empty;
+            TextInfo txtInfo = new CultureInfo("en-US", false).TextInfo;
             string Criteria = String.Empty;
             string Sequence = String.Empty;
             string DetailSummary = String.Empty;
             string Branch = GetString(ActiveSheet.Range["A3"]);
             string Identifier = GetString(ActiveSheet.Range["A1"]).SingleSpace().Trim();
+            string FileName = Branch + " " + Today();
+            string SavePath = Properties.Settings.Default.Path117 + Branch + " 117 Report\\";
             int ByIndex = 0;
             int ForIndex = 0;
-            TextInfo txtInfo = new CultureInfo("en-US", false).TextInfo;
-
-
+            
             //Check if report is a detailed or summary report
             if (Identifier.Contains("SUMMARY REPORT"))
-            {
                 DetailSummary = "SUMMARY";
-            }
             else if (Identifier.Contains("DETAIL REPORT"))
-            {
                 DetailSummary = "DETAIL";
-            }
             else
             {
                 MessageBox.Show(RepNotHandled);
                 return;
             }
+
+            //Add Detail/Summary to the file path
+            SavePath += DetailSummary + "\\";
 
             //Get report sequence
             ByIndex = Identifier.IndexOf("BY");
@@ -268,82 +266,122 @@ namespace SaveWorkbook
                 return;
             }
 
+
+            //The report sequence is how it was filtered
+            #region Sequence
             switch (Sequence)
             {
+                #region ByCustomer
                 case "ByCustomer":
+                    //TODO:
+                    //Check to see if a range of customers was chosen
+                    //If more than one DPC is listed, use a different folder
+                    string Customer = GetString(ActiveSheet.Cells[3, FindColumnHeader(2, "Customer")]);
+                    if (Customer != String.Empty)
+                        SavePath += Sequence + "\\" + Customer + "\\";
+                    else
+                    {
+                        MessageBox.Show("Unable to find customer DPC.", "Sequence ByCustomer - Error");
+                        return;
+                    }
                     break;
+                #endregion
 
+                #region ByOrderDate
                 case "ByOrderDate":
-                    break;
 
+                    break;
+                #endregion
+
+                #region BySimNumber
                 case "BySimNumber":
                     break;
+                #endregion
 
+                #region ByGrossMargin
                 case "ByGrossMargin":
                     break;
+                #endregion
 
+                #region ByOrderTotal
                 case "ByOrderTotal":
                     break;
+                #endregion
 
+                #region ByInsideSalesperson
                 case "ByInsideSalesperson":
+                    //TODO:
+                    //Add a check to make sure only one sales number was chosen
+                    //If multiple were chosen use a different file path
                     string ISN = GetString(ActiveSheet.Cells[3, FindColumnHeader(2, "IN")]);
-
                     if (ISN != String.Empty)
-                    {
-                        SavePath = Properties.Settings.Default.Path117 + Branch + " 117 Report\\" + Sequence + "\\" + ISN + "\\";
-                    }
+                        SavePath += Sequence + "\\" + ISN + "\\";
                     else
                     {
                         MessageBox.Show("Unable to find inside sales number.", "Sequence ByISN - Error");
                         return;
                     }
                     break;
+                #endregion
 
+                #region ByOutsideSalesperson
                 case "ByOutsideSalesperson":
                     break;
+                #endregion
 
                 default:
                     MessageBox.Show(RepNotHandled, "Sequence Default - Error");
                     return;
             }
+            #endregion
 
             #region Criteria
             switch (Criteria)
             {
                 case "ALL ORDERS":
+                    FileName += " ALLORDERS";
                     break;
 
                 case "BACK ORDERS":
+                    FileName += " BACKORDERS";
                     break;
 
                 //Contract Orders not handled
 
                 case "DIRECT SHIPPED ORDERS":
+                    FileName += " DSORDERS";
                     break;
 
                 case "INQUIRIES":
+                    FileName += " INQUIRIES";
                     break;
 
                 case "CREDIT MEMOS":
+                    FileName += "CREDITMEMOS";
                     break;
 
                 //New Orders (Entered Not Picked) not handled
 
                 case "OPEN PICK TICKETS":
+                    FileName += " OPENTICKETS";
                     break;
 
                 case "ORDERS SHIPPED BUT NOT INVOICED":
+                    FileName += " SHIPPEDNOTINVOICED";
                     break;
 
                 case "UNRELEASED ORDERS":
+                    FileName += " UNRELEASED";
                     break;
 
                 //Blanket Orders Held Pendign Review not handled
 
                 case "SPECIAL ORDERS":
+                    FileName += " SPECIALORDERS";
                     break;
 
                 case "ASSEMBLE AND HOLD ORDERS":
+                    FileName += " ASSEMBLEHOLD";
                     break;
 
                 default:
@@ -352,7 +390,7 @@ namespace SaveWorkbook
             }
             #endregion
 
-            SavePath = Properties.Settings.Default.Path117 + Branch + " 117 Report\\" + Sequence + "\\";
+            MessageBox.Show("Path: " + SavePath + " File: " + FileName);
         }
 
         private bool Is117()
