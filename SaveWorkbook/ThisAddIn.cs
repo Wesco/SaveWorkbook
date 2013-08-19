@@ -132,7 +132,7 @@ namespace SaveWorkbook
             string DetailSummary = String.Empty;
             int ByIndex = 0;
             int ForIndex = 0;
-            
+
             // Verify the branch number was found
             if (Branch == String.Empty)
             {
@@ -184,6 +184,12 @@ namespace SaveWorkbook
             #region Sequence
             switch (Sequence)
             {
+                #region ByOrder
+                case "ByOrder":
+                    SavePath += Sequence + "\\";
+                    break;
+                #endregion
+
                 #region ByCustomer
                 case "ByCustomer":
                     //TODO:
@@ -200,6 +206,11 @@ namespace SaveWorkbook
                     }
                     break;
                 #endregion
+
+                // By Order Date not handled
+                // By SIM Number not handled
+                // By Gross Margin not handled
+                // By Dollar Amount not handled
 
                 #region ByInsideSalesperson
                 case "ByInsideSalesperson":
@@ -233,12 +244,6 @@ namespace SaveWorkbook
                     break;
                 #endregion
 
-                #region ByOrder
-                case "ByOrder":
-                    SavePath += Sequence + "\\";
-                    break;
-                #endregion
-
                 #region Default
                 default:
                     MessageBox.Show(RepNotHandled, "Sequence Default - Error");
@@ -260,7 +265,7 @@ namespace SaveWorkbook
                     FileName += " BACKORDERS";
                     break;
 
-                //Contract Orders not handled
+                // Contract Orders not handled
 
                 case "DIRECT SHIPPED ORDERS":
                     FileName += " DSORDERS";
@@ -274,7 +279,7 @@ namespace SaveWorkbook
                     FileName += "CREDITMEMOS";
                     break;
 
-                //New Orders (Entered Not Picked) not handled
+                // New Orders (Entered Not Picked) not handled
 
                 case "OPEN PICK TICKETS":
                     FileName += " OPENTICKETS";
@@ -288,7 +293,7 @@ namespace SaveWorkbook
                     FileName += " UNRELEASED";
                     break;
 
-                //Blanket Orders Held Pendign Review not handled
+                // Blanket Orders Held Pendign Review not handled
 
                 case "SPECIAL ORDERS":
                     FileName += " SPECIALORDERS";
