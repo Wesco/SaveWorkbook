@@ -120,116 +120,27 @@ namespace SaveWorkbook
         }
 
         #region 117
-        public void SaveCust117()
-        {
-            string type = (ActiveSheet.Range["A1"].Value).ToString();
-            string branch = (ActiveSheet.Range["A3"].Value).ToString();
-            string custNum = (ActiveSheet.Range["C3"].Value).ToString();
-            string fileName = branch + " " + Today() + " INQUIRY";
-            string savePath = Properties.Settings.Default.Path117 + branch + " 117 Report\\" + "ByCustomerNumber\\" + custNum + "\\";
-
-            if (type.Find("INQUIRIES") == "INQUIRIES")
-            {
-                SaveActiveBook(savePath, fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
-            }
-        }
-
-        public void SaveISN117()
-        {
-            string path;
-            string fileName;
-            string[] reportType = new string[3];
-            string branch = "";
-            int ISN = 0;
-
-            //Filter the report type string to check if it is a back order report
-            if (ActiveSheet.Range["A1"].Value != null)
-            {
-                if (ActiveSheet.Range["A3"].Value != null)
-                    branch = (ActiveSheet.Range["A3"].Value).ToString();
-
-                reportType[0] = (ActiveSheet.Range["A1"].Value).ToString();
-                reportType[1] = (ActiveSheet.Range["A1"].Value).ToString();
-                reportType[2] = (ActiveSheet.Range["A1"].Value).ToString();
-
-                reportType[0] = reportType[0].Replace(" ", String.Empty);
-                reportType[0] = reportType[0].Substring(reportType[0].Length - 10);
-
-                reportType[1] = reportType[1].Replace(" ", String.Empty);
-                reportType[1] = reportType[1].Substring(reportType[1].Length - 19);
-
-                reportType[2] = reportType[0].Replace(" ", String.Empty);
-                reportType[2] = reportType[0].Substring(reportType[0].Length - 9);
-            }
-
-            for (int i = 0; i < reportType.Count(); i++)
-            {
-                switch (reportType[i])
-                {
-                    case "BACKORDERS":
-                        //Try to find the inside sales number
-                        int.TryParse((ActiveSheet.Cells[3, FindColumnHeader(2, "IN")].Value).ToString(), out ISN);
-
-                        if (ISN != 0)
-                        {
-                            fileName = branch + " " + Today() + " BACKORDERS" + ".xlsx";
-                            path = Properties.Settings.Default.Path117 + branch + @" 117 Report\" + @"ByInsideSalesNumber\" + ISN + @"\";
-                            if (!Directory.Exists(path))
-                                Directory.CreateDirectory(path);
-
-                            SaveActiveBook(path, fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
-                        }
-                        break;
-
-                    case "DIRECTSHIPPEDORDERS":
-                        //Try to find the inside sales number
-                        int.TryParse((ActiveSheet.Cells[3, FindColumnHeader(2, "IN")].Value).ToString(), out ISN);
-
-                        if (ISN != 0)
-                        {
-                            path = Properties.Settings.Default.Path117 + branch + @" 117 Report\" + @"ByInsideSalesNumber\" + ISN + @"\";
-                            fileName = branch + " " + Today() + " DSORDERS" + ".xlsx";
-
-                            if (!Directory.Exists(path))
-                                Directory.CreateDirectory(path);
-
-                            SaveActiveBook(path, fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
-                        }
-                        break;
-
-                    case "ALLORDERS":
-                        //Try to find the inside sales number
-                        int.TryParse((ActiveSheet.Cells[3, FindColumnHeader(2, "IN")].Value).ToString(), out ISN);
-
-                        if (ISN != 0)
-                        {
-                            path = Properties.Settings.Default.Path117 + branch + @" 117 Report\" + @"ByInsideSalesNumber\" + ISN + @"\";
-                            fileName = branch + " " + Today() + " ALLORDERS" + ".xlsx";
-
-                            if (!Directory.Exists(path))
-                                Directory.CreateDirectory(path);
-
-                            SaveActiveBook(path, fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
-                        }
-                        break;
-                }
-            }
-        }
-
         public void Save117()
         {
             TextInfo txtInfo = new CultureInfo("en-US", false).TextInfo;
-            string Criteria = String.Empty;
-            string Sequence = String.Empty;
-            string DetailSummary = String.Empty;
             string Branch = GetString(ActiveSheet.Range["A3"]);
             string Identifier = GetString(ActiveSheet.Range["A1"]).SingleSpace().Trim();
             string FileName = Branch + " " + Today();
             string SavePath = Properties.Settings.Default.Path117 + Branch + " 117 Report\\";
+            string Criteria = String.Empty;
+            string Sequence = String.Empty;
+            string DetailSummary = String.Empty;
             int ByIndex = 0;
             int ForIndex = 0;
+            
+            // Verify the branch number was found
+            if (Branch == String.Empty)
+            {
+                MessageBox.Show("Unable to find branch number.", "Save117 Error - Branch");
+                return;
+            }
 
-            //Check if report is a detailed or summary report
+            // Check if report is a detailed or summary report
             if (Identifier.Contains("SUMMARY REPORT"))
                 DetailSummary = "SUMMARY";
             else if (Identifier.Contains("DETAIL REPORT"))
@@ -240,10 +151,10 @@ namespace SaveWorkbook
                 return;
             }
 
-            //Add Detail/Summary to the file path
+            // Add Detail/Summary to the file path
             SavePath += DetailSummary + "\\";
 
-            //Get report sequence
+            // Get report sequence
             ByIndex = Identifier.IndexOf("BY");
             ForIndex = Identifier.IndexOf("FOR");
 
@@ -257,7 +168,7 @@ namespace SaveWorkbook
                 return;
             }
 
-            //Get report criteria
+            // Get report criteria
             try
             {
                 Criteria = Identifier.Right(Identifier.Length - ForIndex - 4);
@@ -268,7 +179,8 @@ namespace SaveWorkbook
                 return;
             }
 
-            //The report sequence is how it was filtered
+            // Sequence = Report Sequence
+            // Used to determine the save folder
             #region Sequence
             switch (Sequence)
             {
@@ -335,6 +247,8 @@ namespace SaveWorkbook
             }
             #endregion
 
+            // Criteria = Report Selection Critieria
+            // Used to determine the file name
             #region Criteria
             switch (Criteria)
             {
@@ -390,7 +304,7 @@ namespace SaveWorkbook
             }
             #endregion
 
-            SaveActiveBook(SavePath, FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);     
+            SaveActiveBook(SavePath, FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
         }
 
         private bool Is117()
@@ -809,34 +723,41 @@ namespace SaveWorkbook
             return 0;
         }
 
+        /// <summary>
+        /// Save the active workbook. If the file path does not exist it will be created.
+        /// </summary>
+        /// <param name="Path">Complete path to save location</param>
+        /// <param name="FileName">File name and extension</param>
+        /// <param name="FileFormat">Excel workbook save type</param>
         private void SaveActiveBook(string Path, string FileName, Excel.XlFileFormat FileFormat)
         {
-            if (!Directory.Exists(Path))
+            try
             {
-                try
-                {
+                if (!Directory.Exists(Path))
                     Directory.CreateDirectory(Path);
-                }
-                catch (Exception e)
-                {
-                    System.Windows.Forms.MessageBox.Show(e.Message.ToString());
-                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "SaveActiveBook - Directory Error");
+                return;
             }
 
             try
             {
                 if (Directory.Exists(Path))
                 {
+                    bool PrevDispAlert = Application.DisplayAlerts;
                     Application.DisplayAlerts = false;
                     ActiveWorkbook.SaveAs(Path + FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
-                    Application.DisplayAlerts = true;
+                    Application.DisplayAlerts = PrevDispAlert;
                 }
             }
             catch (System.Runtime.InteropServices.COMException e)
             {
                 //If error is not due to user canceled save display the error 
                 if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
-                    System.Windows.Forms.MessageBox.Show(e.Message.ToString());
+                    MessageBox.Show(e.Message, "SaveActiveBook - COM Error");
+                return;
             }
         }
 
