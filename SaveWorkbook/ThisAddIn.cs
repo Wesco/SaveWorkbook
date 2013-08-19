@@ -86,6 +86,8 @@ namespace SaveWorkbook
                     case "117":
                         if (Is117())
                             Save117();
+                        else
+                            MessageBox.Show(RepNotHandled, "RepType 117 - Error");
                         break;
 
                     case "473":
@@ -226,7 +228,7 @@ namespace SaveWorkbook
             string SavePath = Properties.Settings.Default.Path117 + Branch + " 117 Report\\";
             int ByIndex = 0;
             int ForIndex = 0;
-            
+
             //Check if report is a detailed or summary report
             if (Identifier.Contains("SUMMARY REPORT"))
                 DetailSummary = "SUMMARY";
@@ -266,7 +268,6 @@ namespace SaveWorkbook
                 return;
             }
 
-
             //The report sequence is how it was filtered
             #region Sequence
             switch (Sequence)
@@ -275,8 +276,9 @@ namespace SaveWorkbook
                 case "ByCustomer":
                     //TODO:
                     //Check to see if a range of customers was chosen
-                    //If more than one DPC is listed, use a different folder
-                    string Customer = GetString(ActiveSheet.Cells[3, FindColumnHeader(2, "Customer")]);
+                    //If more than one DPC is listed return as not handled
+                    int ColNum = FindColumnHeader(2, "Customer");
+                    string Customer = GetString(ActiveSheet.Cells[3, ColNum]);
                     if (Customer != String.Empty)
                         SavePath += Sequence + "\\" + Customer + "\\";
                     else
@@ -287,32 +289,11 @@ namespace SaveWorkbook
                     break;
                 #endregion
 
-                #region ByOrderDate
-                case "ByOrderDate":
-
-                    break;
-                #endregion
-
-                #region BySimNumber
-                case "BySimNumber":
-                    break;
-                #endregion
-
-                #region ByGrossMargin
-                case "ByGrossMargin":
-                    break;
-                #endregion
-
-                #region ByOrderTotal
-                case "ByOrderTotal":
-                    break;
-                #endregion
-
                 #region ByInsideSalesperson
                 case "ByInsideSalesperson":
                     //TODO:
                     //Add a check to make sure only one sales number was chosen
-                    //If multiple were chosen use a different file path
+                    //If multiple were chosen return as not handled
                     string ISN = GetString(ActiveSheet.Cells[3, FindColumnHeader(2, "IN")]);
                     if (ISN != String.Empty)
                         SavePath += Sequence + "\\" + ISN + "\\";
@@ -326,12 +307,31 @@ namespace SaveWorkbook
 
                 #region ByOutsideSalesperson
                 case "ByOutsideSalesperson":
+                    //TODO:
+                    //Add a check to make sure only one sales number was chosen
+                    //If multiple were chosen return as not handled
+                    string OSN = GetString(ActiveSheet.Cells[3, FindColumnHeader(2, "OUT")]);
+                    if (OSN != String.Empty)
+                        SavePath += Sequence + "\\" + OSN + "\\";
+                    else
+                    {
+                        MessageBox.Show("Unable to find outside sales number.", "Sequence ByOSN - Error");
+                        return;
+                    }
                     break;
                 #endregion
 
+                #region ByOrder
+                case "ByOrder":
+                    SavePath += Sequence + "\\";
+                    break;
+                #endregion
+
+                #region Default
                 default:
                     MessageBox.Show(RepNotHandled, "Sequence Default - Error");
                     return;
+                #endregion
             }
             #endregion
 
@@ -390,7 +390,7 @@ namespace SaveWorkbook
             }
             #endregion
 
-            MessageBox.Show("Path: " + SavePath + " File: " + FileName);
+            SaveActiveBook(SavePath, FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);     
         }
 
         private bool Is117()

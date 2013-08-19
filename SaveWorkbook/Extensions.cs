@@ -46,5 +46,22 @@ namespace SaveWorkbook
 
             return value;
         }
+
+        public static bool HasDuplicates(this Range value)
+        {
+            int TotalRows = value.Rows.Count;
+            int TotalCols = value.Columns.Count;
+            List<Range> ItemList = new List<Range>();
+
+            for (int x = 1; x <= TotalCols; x++)
+            {
+                for (int i = 1; i <= TotalRows; i++)
+                {
+                    ItemList.Add(value.Cells[i, x]);
+                }
+            }
+
+            return ItemList.Count != ItemList.Distinct().Count();
+        }
     }
 }
