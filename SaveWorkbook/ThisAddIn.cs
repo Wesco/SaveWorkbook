@@ -704,26 +704,34 @@ namespace SaveWorkbook
 
         private void SaveOAR_Sheet(Excel.Worksheet WS)
         {
+            //Remove Autofilter from WS
             WS.AutoFilterMode = false;
+
+            //Create UID column on WS
             WS.Columns[1].Insert();
             WS.Range["A1"].Value = "UID";
 
+            //Lookup column numbers on WS
             int os_col = FindColumnHeader(1, "os_name", WS);
             int inv_col = FindColumnHeader(1, "inv", WS);
             int mfr_col = FindColumnHeader(1, "mfr", WS);
             int itm_col = FindColumnHeader(1, "item", WS);
             int sls_col = FindColumnHeader(1, "sales", WS);
+
+            //These columns don't exist yet
             int note1_col = 0;
             int note2_col = 0;
             int last_col = 0;
 
+            //Get the last row of column C
             int rows = WS.Range["C" + WS.Rows.Count].End[Excel.XlDirection.xlUp].Row + 1;
+
+            //These will be used when finding the previous workbook
             string dir = String.Empty;
             string old_book = String.Empty;
 
-            if (WS.Name == "3615 claim")
-                MessageBox.Show("3615 claim!");
-
+            //if (WS.Name == "3615 claim")
+            //    MessageBox.Show("3615 claim!");
 
             if (os_col > 0 && inv_col > 0 && mfr_col > 0 && itm_col > 0 && sls_col > 0)
             {
@@ -735,7 +743,7 @@ namespace SaveWorkbook
                     Directory.CreateDirectory(dir);
 
                 //Get old notes
-                for (int i = 0; i < 120; i++)
+                for (int i = 1; i < 120; i++)
                 {
                     old_book = WS.Name + " " + Today(-i) + ".xlsx";
 
@@ -743,11 +751,11 @@ namespace SaveWorkbook
                     {
                         Excel.Workbook thisWB = ActiveWorkbook;
                         Excel.Workbook wb = Workbooks.Open(dir + old_book);
-                        Excel.Worksheet s = wb.ActiveSheet;
+                        Excel.Worksheet s = wb.Sheets[1];
 
-                        s.AutoFilterMode = false;
-                        s.Columns[1].Insert();
-                        s.Range["A1"].Value = "UID";
+                        WS.AutoFilterMode = false;
+                        WS.Columns[1].Insert();
+                        WS.Range["A1"].Value = "UID";
 
                         os_col = FindColumnHeader(1, "os_name", s);
                         inv_col = FindColumnHeader(1, "inv", s);
@@ -797,7 +805,7 @@ namespace SaveWorkbook
                 //Delete the UID lookup column
                 WS.Columns[1].Delete();
                 WS.Copy();
-                SaveActiveBook(dir, WS.Name + " " + Today(), Excel.XlFileFormat.xlOpenXMLWorkbook);
+                SaveActiveBook(dir, WS.Name + " " + Today() + " TESTING", Excel.XlFileFormat.xlOpenXMLWorkbook);
                 ActiveWorkbook.Saved = true;
                 ActiveWorkbook.Close();
 
