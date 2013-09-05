@@ -509,6 +509,7 @@ namespace SaveWorkbook
 
         }
 
+        #region GAPS
         public void SaveGAPS()
         {
             DateTime dt = DateTime.Now;
@@ -530,239 +531,6 @@ namespace SaveWorkbook
                 //If error is not due to user canceled save display the error message
                 if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
                     System.Windows.Forms.MessageBox.Show(e.Message.ToString());
-            }
-        }
-
-        public void Save325()
-        {
-            string path = Properties.Settings.Default.Path325;
-            string fileName = "325 " + Today() + ".xlsx";
-            string reportType = ActiveSheet.Range["A1"].Value;
-
-            if (reportType.Left(7) == "SIMLIST" && reportType.Replace(" ", String.Empty).Right(17) == "INVENTORYDOWNLOAD")
-            {
-                if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
-
-                try
-                {
-                    ActiveWorkbook.SaveAs(path + fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
-                }
-                catch (Exception e)
-                {
-                    //If error is not due to user canceled save display the error message
-                    if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
-                        System.Windows.Forms.MessageBox.Show(e.Message.ToString());
-                }
-            }
-        }
-
-        public void SaveIROpenOrders()
-        {
-            string FilePath = @"\\7938-HP02\Shared\IR order entry\IR macro for all plant order entry\IR Open Purchase Orders\";
-            string FileName = "Open POs " + Today() + ".xlsx";
-
-            SaveActiveBook(FilePath, FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
-        }
-
-        public void SaveOAR()
-        {
-            foreach (Excel.Worksheet WS in ActiveWorkbook.Worksheets)
-            {
-                if (IsOpenAR(WS))
-                    SaveOAR_Sheet(WS);
-            }
-
-            //Mark the workbook as saved.
-            //All changes made during the previous process were removed from the source book
-            ActiveWorkbook.Saved = true;
-        }
-
-        private void SaveOAR_Sheet(Excel.Worksheet WS)
-        {
-            WS.AutoFilterMode = false;
-            WS.Columns[1].Insert();
-            WS.Range["A1"].Value = "UID";
-
-            int os_col = FindColumnHeader(1, "os_name", WS);
-            int inv_col = FindColumnHeader(1, "inv", WS);
-            int mfr_col = FindColumnHeader(1, "mfr", WS);
-            int itm_col = FindColumnHeader(1, "item", WS);
-            int sls_col = FindColumnHeader(1, "sales", WS);
-            int note1_col = 0;
-            int note2_col = 0;
-            int last_col = 0;
-
-            int rows = WS.Range["C" + WS.Rows.Count].End[Excel.XlDirection.xlUp].Row + 1;
-            string dir = String.Empty;
-            string old_book = String.Empty;
-
-            if (WS.Name == "3615 claim")
-                MessageBox.Show("3615 claim!");
-
-
-            if (os_col > 0 && inv_col > 0 && mfr_col > 0 && itm_col > 0 && sls_col > 0)
-            {
-                dir = @"\\7938-HP02\Shared\3615 Open AR\" + (WS.Cells[2, os_col].Value).ToString() + "\\";
-
-                InsertOpenAR_UID(WS, os_col, inv_col, mfr_col, itm_col, sls_col);
-
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-
-                //Get old notes
-                for (int i = 0; i < 30; i++)
-                {
-                    old_book = WS.Name + " " + Today(-i) + ".xlsx";
-
-                    if (File.Exists(dir + old_book))
-                    {
-                        Excel.Workbook thisWB = ActiveWorkbook;
-                        Excel.Workbook wb = Workbooks.Open(dir + old_book);
-                        Excel.Worksheet s = wb.ActiveSheet;
-
-                        s.AutoFilterMode = false;
-                        s.Columns[1].Insert();
-                        s.Range["A1"].Value = "UID";
-
-                        os_col = FindColumnHeader(1, "os_name", s);
-                        inv_col = FindColumnHeader(1, "inv", s);
-                        mfr_col = FindColumnHeader(1, "mfr", s);
-                        itm_col = FindColumnHeader(1, "item", s);
-                        sls_col = FindColumnHeader(1, "sales", s);
-                        note1_col = FindColumnHeader(1, "note 1", s);
-                        note2_col = FindColumnHeader(1, "note 2", s);
-                        last_col = WS.Range["ZZ1"].End[Excel.XlDirection.xlToLeft].Column;
-
-                        InsertOpenAR_UID(s, os_col, inv_col, mfr_col, itm_col, sls_col);
-
-                        //If note columns are found on the old sheet import
-                        //them to the current workbook using a vlookup
-                        if (note1_col > 0 && note2_col > 0)
-                        {
-                            //Create note 1 & note 2 column headers
-                            WS.Cells[1, last_col + 1].Value = "note 1";
-                            WS.Cells[1, last_col + 2].Value = "note 2";
-
-                            //Create vlookup string
-                            string note1_lookup = "VLOOKUP(A2,'[" + wb.Name + "]" + s.Name + "'!A:ZZ," + note1_col + ",FALSE)";
-                            note1_lookup = "=IFERROR(IF(" + note1_lookup + "=0,\"\"," + note1_lookup + "),\"\")";
-
-                            string note2_lookup = "VLOOKUP(A2,'[" + wb.Name + "]" + s.Name + "'!A:ZZ," + note2_col + ",FALSE)";
-                            note2_lookup = "=IFERROR(IF(" + note2_lookup + "=0,\"\"," + note2_lookup + "),\"\")"; ;
-
-                            //Lookup old notes
-                            WS.Range[WS.Cells[2, last_col + 1], WS.Cells[rows, last_col + 1]].Formula = note1_lookup;
-                            WS.Range[WS.Cells[2, last_col + 2], WS.Cells[rows, last_col + 2]].Formula = note2_lookup;
-
-                            WS.Range[WS.Cells[2, last_col + 1], WS.Cells[rows, last_col + 1]].Value = WS.Range[WS.Cells[2, last_col + 1], WS.Cells[rows, last_col + 1]].Value;
-                            WS.Range[WS.Cells[2, last_col + 2], WS.Cells[rows, last_col + 2]].Value = WS.Range[WS.Cells[2, last_col + 2], WS.Cells[rows, last_col + 2]].Value;
-                        }
-                        else
-                        {
-                            last_col = WS.Columns[WS.Columns.Count].End[Excel.XlDirection.xlToLeft].Column;
-                            WS.Cells[1, last_col + 1].Value = "note 1";
-                            WS.Cells[1, last_col + 2].Value = "note 2";
-                        }
-
-                        wb.Saved = true;
-                        wb.Close();
-                        break;
-                    }
-                }
-                //Delete the UID lookup column
-                WS.Columns[1].Delete();
-                WS.Copy();
-                SaveActiveBook(dir, WS.Name + " " + Today(), Excel.XlFileFormat.xlOpenXMLWorkbook);
-                ActiveWorkbook.Saved = true;
-                ActiveWorkbook.Close();
-
-                if (note1_col > 0 && note2_col > 0)
-                {
-                    //Decrement note columns since the first column was removed earlier
-                    note1_col--;
-                    note2_col--;
-
-                    //Remove note columns from the original document
-                    WS.Columns[note2_col].Delete();
-                    WS.Columns[note1_col].Delete();
-                }
-            }
-        }
-
-        private void InsertOpenAR_UID(Excel.Worksheet WS, int os_col, int inv_col, int mfr_col, int itm_col, int sls_col)
-        {
-            int rows = WS.Range["C" + WS.Rows.Count].End[Excel.XlDirection.xlUp].Row + 1;
-
-            WS.Range[WS.Cells[2, 1], WS.Cells[rows, 1]].Formula = "=" +
-                WS.Cells[2, inv_col].Address(false, false) + "&" +
-                WS.Cells[2, mfr_col].Address(false, false) + "&" +
-                WS.Cells[2, itm_col].Address(false, false) + "&" +
-                WS.Cells[2, sls_col].Address(false, false);
-
-            WS.Range[WS.Cells[2, 1], WS.Cells[rows, 1]].NumberFormat = "@";
-            WS.Range[WS.Cells[2, 1], WS.Cells[rows, 1]].Value = WS.Range[WS.Cells[2, 1], WS.Cells[rows, 1]].Value;
-        }
-
-        /// <summary>
-        /// Finds the specified column and returns the column number.
-        /// If no column is found then 0 is returned.
-        /// </summary>
-        /// <param name="row">The row containg column headers</param>
-        /// <param name="text">The column header to search for</param>
-        /// <returns></returns>
-        private int FindColumnHeader(int row, string text, Excel.Worksheet WS = null)
-        {
-            if (WS == null)
-                WS = ActiveSheet;
-
-            for (int col = 1; col < WS.UsedRange.Columns.Count; col++)
-            {
-                if (WS.Cells[row, col].Value != null)
-                {
-                    if ((WS.Cells[row, col].Value).ToString() == text)
-                        return col;
-                }
-            }
-
-            return 0;
-        }
-
-        /// <summary>
-        /// Save the active workbook. If the file path does not exist it will be created.
-        /// </summary>
-        /// <param name="Path">Complete path to save location</param>
-        /// <param name="FileName">File name and extension</param>
-        /// <param name="FileFormat">Excel workbook save type</param>
-        private void SaveActiveBook(string Path, string FileName, Excel.XlFileFormat FileFormat)
-        {
-            try
-            {
-                if (!Directory.Exists(Path))
-                    Directory.CreateDirectory(Path);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "SaveActiveBook - Directory Error");
-                return;
-            }
-
-            try
-            {
-                if (Directory.Exists(Path))
-                {
-                    bool PrevDispAlert = Application.DisplayAlerts;
-                    Application.DisplayAlerts = false;
-                    ActiveWorkbook.SaveAs(Path + FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
-                    Application.DisplayAlerts = PrevDispAlert;
-                }
-            }
-            catch (System.Runtime.InteropServices.COMException e)
-            {
-                //If error is not due to user canceled save display the error 
-                if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
-                    MessageBox.Show(e.Message, "SaveActiveBook - COM Error");
-                return;
             }
         }
 
@@ -886,6 +654,263 @@ namespace SaveWorkbook
 
             return true;
         }
+        #endregion
+
+        public void Save325()
+        {
+            string path = Properties.Settings.Default.Path325;
+            string fileName = "325 " + Today() + ".xlsx";
+            string reportType = ActiveSheet.Range["A1"].Value;
+
+            if (reportType.Left(7) == "SIMLIST" && reportType.Replace(" ", String.Empty).Right(17) == "INVENTORYDOWNLOAD")
+            {
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                try
+                {
+                    ActiveWorkbook.SaveAs(path + fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+                }
+                catch (Exception e)
+                {
+                    //If error is not due to user canceled save display the error message
+                    if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
+                        System.Windows.Forms.MessageBox.Show(e.Message.ToString());
+                }
+            }
+        }
+
+        #region Open_AR
+        public void SaveIROpenOrders()
+        {
+            string FilePath = @"\\7938-HP02\Shared\IR order entry\IR macro for all plant order entry\IR Open Purchase Orders\";
+            string FileName = "Open POs " + Today() + ".xlsx";
+
+            SaveActiveBook(FilePath, FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+        }
+
+        public void SaveOAR()
+        {
+            foreach (Excel.Worksheet WS in ActiveWorkbook.Worksheets)
+            {
+                if (IsOpenAR(WS))
+                    SaveOAR_Sheet(WS);
+            }
+
+            //Mark the workbook as saved.
+            //All changes made during the previous process were removed from the source book
+            ActiveWorkbook.Saved = true;
+        }
+
+        private void SaveOAR_Sheet(Excel.Worksheet WS)
+        {
+            WS.AutoFilterMode = false;
+            WS.Columns[1].Insert();
+            WS.Range["A1"].Value = "UID";
+
+            int os_col = FindColumnHeader(1, "os_name", WS);
+            int inv_col = FindColumnHeader(1, "inv", WS);
+            int mfr_col = FindColumnHeader(1, "mfr", WS);
+            int itm_col = FindColumnHeader(1, "item", WS);
+            int sls_col = FindColumnHeader(1, "sales", WS);
+            int note1_col = 0;
+            int note2_col = 0;
+            int last_col = 0;
+
+            int rows = WS.Range["C" + WS.Rows.Count].End[Excel.XlDirection.xlUp].Row + 1;
+            string dir = String.Empty;
+            string old_book = String.Empty;
+
+            if (WS.Name == "3615 claim")
+                MessageBox.Show("3615 claim!");
+
+
+            if (os_col > 0 && inv_col > 0 && mfr_col > 0 && itm_col > 0 && sls_col > 0)
+            {
+                dir = @"\\7938-HP02\Shared\3615 Open AR\" + (WS.Cells[2, os_col].Value).ToString() + "\\";
+
+                InsertOpenAR_UID(WS, os_col, inv_col, mfr_col, itm_col, sls_col);
+
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                //Get old notes
+                for (int i = 0; i < 120; i++)
+                {
+                    old_book = WS.Name + " " + Today(-i) + ".xlsx";
+
+                    if (File.Exists(dir + old_book))
+                    {
+                        Excel.Workbook thisWB = ActiveWorkbook;
+                        Excel.Workbook wb = Workbooks.Open(dir + old_book);
+                        Excel.Worksheet s = wb.ActiveSheet;
+
+                        s.AutoFilterMode = false;
+                        s.Columns[1].Insert();
+                        s.Range["A1"].Value = "UID";
+
+                        os_col = FindColumnHeader(1, "os_name", s);
+                        inv_col = FindColumnHeader(1, "inv", s);
+                        mfr_col = FindColumnHeader(1, "mfr", s);
+                        itm_col = FindColumnHeader(1, "item", s);
+                        sls_col = FindColumnHeader(1, "sales", s);
+                        note1_col = FindColumnHeader(1, "note 1", s);
+                        note2_col = FindColumnHeader(1, "note 2", s);
+                        last_col = WS.Range["ZZ1"].End[Excel.XlDirection.xlToLeft].Column;
+
+                        InsertOpenAR_UID(s, os_col, inv_col, mfr_col, itm_col, sls_col);
+
+                        //If note columns are found on the old sheet import
+                        //them to the current workbook using a vlookup
+                        if (note1_col > 0 && note2_col > 0)
+                        {
+                            //Create note 1 & note 2 column headers
+                            WS.Cells[1, last_col + 1].Value = "note 1";
+                            WS.Cells[1, last_col + 2].Value = "note 2";
+
+                            //Create vlookup string
+                            string note1_lookup = "VLOOKUP(A2,'[" + wb.Name + "]" + s.Name + "'!A:ZZ," + note1_col + ",FALSE)";
+                            note1_lookup = "=IFERROR(IF(" + note1_lookup + "=0,\"\"," + note1_lookup + "),\"\")";
+
+                            string note2_lookup = "VLOOKUP(A2,'[" + wb.Name + "]" + s.Name + "'!A:ZZ," + note2_col + ",FALSE)";
+                            note2_lookup = "=IFERROR(IF(" + note2_lookup + "=0,\"\"," + note2_lookup + "),\"\")"; ;
+
+                            //Lookup old notes
+                            WS.Range[WS.Cells[2, last_col + 1], WS.Cells[rows, last_col + 1]].Formula = note1_lookup;
+                            WS.Range[WS.Cells[2, last_col + 2], WS.Cells[rows, last_col + 2]].Formula = note2_lookup;
+
+                            WS.Range[WS.Cells[2, last_col + 1], WS.Cells[rows, last_col + 1]].Value = WS.Range[WS.Cells[2, last_col + 1], WS.Cells[rows, last_col + 1]].Value;
+                            WS.Range[WS.Cells[2, last_col + 2], WS.Cells[rows, last_col + 2]].Value = WS.Range[WS.Cells[2, last_col + 2], WS.Cells[rows, last_col + 2]].Value;
+                        }
+                        else
+                        {
+                            last_col = WS.Columns[WS.Columns.Count].End[Excel.XlDirection.xlToLeft].Column;
+                            WS.Cells[1, last_col + 1].Value = "note 1";
+                            WS.Cells[1, last_col + 2].Value = "note 2";
+                        }
+
+                        wb.Saved = true;
+                        wb.Close();
+                        break;
+                    }
+                }
+                //Delete the UID lookup column
+                WS.Columns[1].Delete();
+                WS.Copy();
+                SaveActiveBook(dir, WS.Name + " " + Today(), Excel.XlFileFormat.xlOpenXMLWorkbook);
+                ActiveWorkbook.Saved = true;
+                ActiveWorkbook.Close();
+
+                if (note1_col > 0 && note2_col > 0)
+                {
+                    //Decrement note columns since the first column was removed earlier
+                    note1_col--;
+                    note2_col--;
+
+                    //Remove note columns from the original document
+                    WS.Columns[note2_col].Delete();
+                    WS.Columns[note1_col].Delete();
+                }
+            }
+        }
+
+        private void InsertOpenAR_UID(Excel.Worksheet WS, int os_col, int inv_col, int mfr_col, int itm_col, int sls_col)
+        {
+            int rows = WS.Range["C" + WS.Rows.Count].End[Excel.XlDirection.xlUp].Row + 1;
+
+            WS.Range[WS.Cells[2, 1], WS.Cells[rows, 1]].Formula = "=" +
+                WS.Cells[2, inv_col].Address(false, false) + "&" +
+                WS.Cells[2, mfr_col].Address(false, false) + "&" +
+                WS.Cells[2, itm_col].Address(false, false) + "&" +
+                WS.Cells[2, sls_col].Address(false, false);
+
+            WS.Range[WS.Cells[2, 1], WS.Cells[rows, 1]].NumberFormat = "@";
+            WS.Range[WS.Cells[2, 1], WS.Cells[rows, 1]].Value = WS.Range[WS.Cells[2, 1], WS.Cells[rows, 1]].Value;
+        }
+
+        private bool IsOpenAR(Excel.Worksheet WS)
+        {
+            var tabColor = WS.Tab.Color;
+
+            //If a color was retrieved
+            if (tabColor.GetType() == typeof(Int32))
+            {
+                //If the color is yellow
+                if (tabColor == 65535)
+                {
+                    return true;
+                }
+                else if (tabColor == 255)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        /// <summary>
+        /// Finds the specified column and returns the column number.
+        /// If no column is found then 0 is returned.
+        /// </summary>
+        /// <param name="row">The row containg column headers</param>
+        /// <param name="text">The column header to search for</param>
+        /// <returns></returns>
+        private int FindColumnHeader(int row, string text, Excel.Worksheet WS = null)
+        {
+            if (WS == null)
+                WS = ActiveSheet;
+
+            for (int col = 1; col < WS.UsedRange.Columns.Count; col++)
+            {
+                if (WS.Cells[row, col].Value != null)
+                {
+                    if ((WS.Cells[row, col].Value).ToString() == text)
+                        return col;
+                }
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        /// Save the active workbook. If the file path does not exist it will be created.
+        /// </summary>
+        /// <param name="Path">Complete path to save location</param>
+        /// <param name="FileName">File name and extension</param>
+        /// <param name="FileFormat">Excel workbook save type</param>
+        private void SaveActiveBook(string Path, string FileName, Excel.XlFileFormat FileFormat)
+        {
+            try
+            {
+                if (!Directory.Exists(Path))
+                    Directory.CreateDirectory(Path);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "SaveActiveBook - Directory Error");
+                return;
+            }
+
+            try
+            {
+                if (Directory.Exists(Path))
+                {
+                    bool PrevDispAlert = Application.DisplayAlerts;
+                    Application.DisplayAlerts = false;
+                    ActiveWorkbook.SaveAs(Path + FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+                    Application.DisplayAlerts = PrevDispAlert;
+                }
+            }
+            catch (System.Runtime.InteropServices.COMException e)
+            {
+                //If error is not due to user canceled save display the error 
+                if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
+                    MessageBox.Show(e.Message, "SaveActiveBook - COM Error");
+                return;
+            }
+        }
 
         private bool IsIROOR()
         {
@@ -926,27 +951,6 @@ namespace SaveWorkbook
                 return false;
 
             return true;
-        }
-
-        private bool IsOpenAR(Excel.Worksheet WS)
-        {
-            var tabColor = WS.Tab.Color;
-
-            //If a color was retrieved
-            if (tabColor.GetType() == typeof(Int32))
-            {
-                //If the color is yellow
-                if (tabColor == 65535)
-                {
-                    return true;
-                }
-                else if (tabColor == 255)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         /// <summary>
