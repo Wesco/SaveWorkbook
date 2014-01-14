@@ -195,7 +195,7 @@ namespace SaveWorkbook
                     //TODO:
                     //Check to see if a range of customers was chosen
                     //If more than one DPC is listed return as not handled
-                    int ColNum = FindColumnHeader(2, "Customer");
+                    int ColNum = FindColumnHeader(2, "CUSTOMER");
                     string Customer = GetString(ActiveSheet.Cells[3, ColNum]);
                     if (Customer != String.Empty)
                         SavePath += Sequence + "\\" + Customer + "\\";
