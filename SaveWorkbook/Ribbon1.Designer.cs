@@ -37,11 +37,10 @@
             this.tab1 = this.Factory.CreateRibbonTab();
             this.group1 = this.Factory.CreateRibbonGroup();
             this.btnSave = this.Factory.CreateRibbonButton();
-            this.btnSaveOAR = this.Factory.CreateRibbonButton();
+            this.separator2 = this.Factory.CreateRibbonSeparator();
             this.btnVMI = this.Factory.CreateRibbonButton();
             this.separator1 = this.Factory.CreateRibbonSeparator();
             this.btnConfigure = this.Factory.CreateRibbonButton();
-            this.separator2 = this.Factory.CreateRibbonSeparator();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             // 
@@ -56,7 +55,6 @@
             // 
             this.group1.Items.Add(this.btnSave);
             this.group1.Items.Add(this.separator2);
-            this.group1.Items.Add(this.btnSaveOAR);
             this.group1.Items.Add(this.btnVMI);
             this.group1.Items.Add(this.separator1);
             this.group1.Items.Add(this.btnConfigure);
@@ -72,14 +70,9 @@
             this.btnSave.ShowImage = true;
             this.btnSave.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSave_Click);
             // 
-            // btnSaveOAR
+            // separator2
             // 
-            this.btnSaveOAR.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnSaveOAR.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveOAR.Image")));
-            this.btnSaveOAR.Label = "Open AR";
-            this.btnSaveOAR.Name = "btnSaveOAR";
-            this.btnSaveOAR.ShowImage = true;
-            this.btnSaveOAR.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSaveOAR_Click);
+            this.separator2.Name = "separator2";
             // 
             // btnVMI
             // 
@@ -103,10 +96,6 @@
             this.btnConfigure.ShowImage = true;
             this.btnConfigure.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnConfigure_Click);
             // 
-            // separator2
-            // 
-            this.separator2.Name = "separator2";
-            // 
             // rbnSaveReport
             // 
             this.Name = "rbnSaveReport";
@@ -127,7 +116,6 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnVMI;
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator1;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnConfigure;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSaveOAR;
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator2;
     }
 

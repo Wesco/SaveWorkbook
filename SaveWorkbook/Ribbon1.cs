@@ -22,11 +22,6 @@ namespace SaveWorkbook
             App.thisAddin.SaveVMI();
         }
 
-        private void btnSaveOAR_Click(object sender, RibbonControlEventArgs e)
-        {
-            App.thisAddin.SaveOAR();
-        }
-
         private void btnConfigure_Click(object sender, RibbonControlEventArgs e)
         {
             frmSettings frm = new frmSettings();

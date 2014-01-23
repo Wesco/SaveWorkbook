@@ -91,7 +91,8 @@ namespace SaveWorkbook
                         break;
 
                     case "473":
-                        Save473();
+                        if (Is473())
+                            Save473();
                         break;
 
                     case "Bra":
@@ -444,6 +445,7 @@ namespace SaveWorkbook
         }
         #endregion
 
+        #region 473
         public void Save473()
         {
             string fileName = "473 " + Today() + ".xlsx";
@@ -475,6 +477,32 @@ namespace SaveWorkbook
                 }
             }
         }
+
+        public bool Is473()
+        {
+            #region Column Headers
+            string[] RepHeaders = new string[51]
+            {
+                "BRANCH",                "ERROR",                "PO NUMBER",                "PO TYPE",                "SHIPPING INSTRUCTIONS 1",                "SHIPPING INSTRUCTIONS 2",                " SUPPLIER",                "SHIP TO",                "DS ORDER",                "PO DATE",                "PO STATUS",                "REQUESTED",                "ACKNOWLEDGE",                "TERMS CODE",                "TERMS DAYS",                "REFERENCE",                "DISC.%",                "FOB",                "BOL",                "SHIPPING TERMS",                "LINE",                "T",                "SIM",                "DESCRIPTION",                "UOM",                "PROMISED",                "QTY ORD",                "QTY REC",                "QTY INV",                "LAST REC",                "PRICE",                "EXTENSION",                "EST",                "ORDER",                "LINE",                "SUPPLIER NAME",                "ADDRESS LINE1",                "ADDRESS LINE2",                "CITY",                "ST",                "ZIP",                "SHIP TO NAME",                "SHIP ADDR LN1",                "SHIP ADDR LN2",                "SHIP CITY",                "SHIP STATE",                "SHIP ZIP",                "NEGNO",                " COSTTYPE",                "COSTDESC",
+                "                                                                                                                                                                                                                                                                                                                                                      "
+            };
+            #endregion
+
+            int TotalCols = ActiveSheet.UsedRange.Columns.Count;
+            Excel.Range ReportHeaders = ActiveSheet.Range[ActiveSheet.Cells[2, 1], ActiveSheet.Cells[2, TotalCols]];
+
+            if (ReportHeaders.Columns.Count == RepHeaders.Length)
+                for (int i = 0; i < RepHeaders.Length; i++)
+                {
+                    if (ReportHeaders.Cells[1, i + 1].Value != RepHeaders[i])
+                        return false;
+                }
+            else
+                return false;
+
+            return true;
+        }
+        #endregion
 
         public void SaveVMI()
         {
@@ -637,7 +665,7 @@ namespace SaveWorkbook
                 "Date_last_issued",
                 "Date_Created",
                 "Days_Supply",
-                "Wdc_rt_qty",
+                "Wdc_rt_qty"
             };
             #endregion
             int TotalCols = ActiveSheet.UsedRange.Columns.Count;
@@ -680,7 +708,7 @@ namespace SaveWorkbook
             }
         }
 
-        #region Open_AR
+
         public void SaveIROpenOrders()
         {
             string FilePath = @"\\7938-HP02\Shared\IR order entry\IR macro for all plant order entry\IR Open Purchase Orders\";
@@ -688,175 +716,6 @@ namespace SaveWorkbook
 
             SaveActiveBook(FilePath, FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
         }
-
-        public void SaveOAR()
-        {
-            foreach (Excel.Worksheet WS in ActiveWorkbook.Worksheets)
-            {
-                if (IsOpenAR(WS))
-                    SaveOAR_Sheet(WS);
-            }
-
-            //Mark the workbook as saved.
-            //All changes made during the previous process were removed from the source book
-            ActiveWorkbook.Saved = true;
-        }
-
-        private void SaveOAR_Sheet(Excel.Worksheet WS)
-        {
-            //Remove Autofilter from WS
-            WS.AutoFilterMode = false;
-
-            //Create UID column on WS
-            WS.Columns[1].Insert();
-            WS.Range["A1"].Value = "UID";
-
-            //Lookup column numbers on WS
-            int os_col = FindColumnHeader(1, "os_name", WS);
-            int inv_col = FindColumnHeader(1, "inv", WS);
-            int mfr_col = FindColumnHeader(1, "mfr", WS);
-            int itm_col = FindColumnHeader(1, "item", WS);
-            int sls_col = FindColumnHeader(1, "sales", WS);
-
-            //These columns don't exist yet
-            int note1_col = 0;
-            int note2_col = 0;
-            int last_col = 0;
-
-            //Get the last row of column C
-            int rows = WS.Range["C" + WS.Rows.Count].End[Excel.XlDirection.xlUp].Row + 1;
-
-            //These will be used when finding the previous workbook
-            string dir = String.Empty;
-            string old_book = String.Empty;
-
-            //if (WS.Name == "3615 claim")
-            //    MessageBox.Show("3615 claim!");
-
-            if (os_col > 0 && inv_col > 0 && mfr_col > 0 && itm_col > 0 && sls_col > 0)
-            {
-                dir = @"\\7938-HP02\Shared\3615 Open AR\" + (WS.Cells[2, os_col].Value).ToString() + "\\";
-
-                InsertOpenAR_UID(WS, os_col, inv_col, mfr_col, itm_col, sls_col);
-
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-
-                //Get old notes
-                for (int i = 1; i < 120; i++)
-                {
-                    old_book = WS.Name + " " + Today(-i) + ".xlsx";
-
-                    if (File.Exists(dir + old_book))
-                    {
-                        Excel.Workbook thisWB = ActiveWorkbook;
-                        Excel.Workbook wb = Workbooks.Open(dir + old_book);
-                        Excel.Worksheet s = wb.Sheets[1];
-
-                        WS.AutoFilterMode = false;
-                        WS.Columns[1].Insert();
-                        WS.Range["A1"].Value = "UID";
-
-                        os_col = FindColumnHeader(1, "os_name", s);
-                        inv_col = FindColumnHeader(1, "inv", s);
-                        mfr_col = FindColumnHeader(1, "mfr", s);
-                        itm_col = FindColumnHeader(1, "item", s);
-                        sls_col = FindColumnHeader(1, "sales", s);
-                        note1_col = FindColumnHeader(1, "note 1", s);
-                        note2_col = FindColumnHeader(1, "note 2", s);
-                        last_col = WS.Range["ZZ1"].End[Excel.XlDirection.xlToLeft].Column;
-
-                        InsertOpenAR_UID(s, os_col, inv_col, mfr_col, itm_col, sls_col);
-
-                        //If note columns are found on the old sheet import
-                        //them to the current workbook using a vlookup
-                        if (note1_col > 0 && note2_col > 0)
-                        {
-                            //Create note 1 & note 2 column headers
-                            WS.Cells[1, last_col + 1].Value = "note 1";
-                            WS.Cells[1, last_col + 2].Value = "note 2";
-
-                            //Create vlookup string
-                            string note1_lookup = "VLOOKUP(A2,'[" + wb.Name + "]" + s.Name + "'!A:ZZ," + note1_col + ",FALSE)";
-                            note1_lookup = "=IFERROR(IF(" + note1_lookup + "=0,\"\"," + note1_lookup + "),\"\")";
-
-                            string note2_lookup = "VLOOKUP(A2,'[" + wb.Name + "]" + s.Name + "'!A:ZZ," + note2_col + ",FALSE)";
-                            note2_lookup = "=IFERROR(IF(" + note2_lookup + "=0,\"\"," + note2_lookup + "),\"\")"; ;
-
-                            //Lookup old notes
-                            WS.Range[WS.Cells[2, last_col + 1], WS.Cells[rows, last_col + 1]].Formula = note1_lookup;
-                            WS.Range[WS.Cells[2, last_col + 2], WS.Cells[rows, last_col + 2]].Formula = note2_lookup;
-
-                            WS.Range[WS.Cells[2, last_col + 1], WS.Cells[rows, last_col + 1]].Value = WS.Range[WS.Cells[2, last_col + 1], WS.Cells[rows, last_col + 1]].Value;
-                            WS.Range[WS.Cells[2, last_col + 2], WS.Cells[rows, last_col + 2]].Value = WS.Range[WS.Cells[2, last_col + 2], WS.Cells[rows, last_col + 2]].Value;
-                        }
-                        else
-                        {
-                            last_col = WS.Columns[WS.Columns.Count].End[Excel.XlDirection.xlToLeft].Column;
-                            WS.Cells[1, last_col + 1].Value = "note 1";
-                            WS.Cells[1, last_col + 2].Value = "note 2";
-                        }
-
-                        wb.Saved = true;
-                        wb.Close();
-                        break;
-                    }
-                }
-                //Delete the UID lookup column
-                WS.Columns[1].Delete();
-                WS.Copy();
-                SaveActiveBook(dir, WS.Name + " " + Today() + " TESTING", Excel.XlFileFormat.xlOpenXMLWorkbook);
-                ActiveWorkbook.Saved = true;
-                ActiveWorkbook.Close();
-
-                if (note1_col > 0 && note2_col > 0)
-                {
-                    //Decrement note columns since the first column was removed earlier
-                    note1_col--;
-                    note2_col--;
-
-                    //Remove note columns from the original document
-                    WS.Columns[note2_col].Delete();
-                    WS.Columns[note1_col].Delete();
-                }
-            }
-        }
-
-        private void InsertOpenAR_UID(Excel.Worksheet WS, int os_col, int inv_col, int mfr_col, int itm_col, int sls_col)
-        {
-            int rows = WS.Range["C" + WS.Rows.Count].End[Excel.XlDirection.xlUp].Row + 1;
-
-            WS.Range[WS.Cells[2, 1], WS.Cells[rows, 1]].Formula = "=" +
-                WS.Cells[2, inv_col].Address(false, false) + "&" +
-                WS.Cells[2, mfr_col].Address(false, false) + "&" +
-                WS.Cells[2, itm_col].Address(false, false) + "&" +
-                WS.Cells[2, sls_col].Address(false, false);
-
-            WS.Range[WS.Cells[2, 1], WS.Cells[rows, 1]].NumberFormat = "@";
-            WS.Range[WS.Cells[2, 1], WS.Cells[rows, 1]].Value = WS.Range[WS.Cells[2, 1], WS.Cells[rows, 1]].Value;
-        }
-
-        private bool IsOpenAR(Excel.Worksheet WS)
-        {
-            var tabColor = WS.Tab.Color;
-
-            //If a color was retrieved
-            if (tabColor.GetType() == typeof(Int32))
-            {
-                //If the color is yellow
-                if (tabColor == 65535)
-                {
-                    return true;
-                }
-                else if (tabColor == 255)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-        #endregion
 
         /// <summary>
         /// Finds the specified column and returns the column number.
