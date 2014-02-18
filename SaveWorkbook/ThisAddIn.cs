@@ -483,7 +483,56 @@ namespace SaveWorkbook
             #region Column Headers
             string[] RepHeaders = new string[51]
             {
-                "BRANCH",                "ERROR",                "PO NUMBER",                "PO TYPE",                "SHIPPING INSTRUCTIONS 1",                "SHIPPING INSTRUCTIONS 2",                " SUPPLIER",                "SHIP TO",                "DS ORDER",                "PO DATE",                "PO STATUS",                "REQUESTED",                "ACKNOWLEDGE",                "TERMS CODE",                "TERMS DAYS",                "REFERENCE",                "DISC.%",                "FOB",                "BOL",                "SHIPPING TERMS",                "LINE",                "T",                "SIM",                "DESCRIPTION",                "UOM",                "PROMISED",                "QTY ORD",                "QTY REC",                "QTY INV",                "LAST REC",                "PRICE",                "EXTENSION",                "EST",                "ORDER",                "LINE",                "SUPPLIER NAME",                "ADDRESS LINE1",                "ADDRESS LINE2",                "CITY",                "ST",                "ZIP",                "SHIP TO NAME",                "SHIP ADDR LN1",                "SHIP ADDR LN2",                "SHIP CITY",                "SHIP STATE",                "SHIP ZIP",                "NEGNO",                " COSTTYPE",                "COSTDESC",
+                "BRANCH",
+                "ERROR",
+                "PO NUMBER",
+                "PO TYPE",
+                "SHIPPING INSTRUCTIONS 1",
+                "SHIPPING INSTRUCTIONS 2",
+                " SUPPLIER",
+                "SHIP TO",
+                "DS ORDER",
+                "PO DATE",
+                "PO STATUS",
+                "REQUESTED",
+                "ACKNOWLEDGE",
+                "TERMS CODE",
+                "TERMS DAYS",
+                "REFERENCE",
+                "DISC.%",
+                "FOB",
+                "BOL",
+                "SHIPPING TERMS",
+                "LINE",
+                "T",
+                "SIM",
+                "DESCRIPTION",
+                "UOM",
+                "PROMISED",
+                "QTY ORD",
+                "QTY REC",
+                "QTY INV",
+                "LAST REC",
+                "PRICE",
+                "EXTENSION",
+                "EST",
+                "ORDER",
+                "LINE",
+                "SUPPLIER NAME",
+                "ADDRESS LINE1",
+                "ADDRESS LINE2",
+                "CITY",
+                "ST",
+                "ZIP",
+                "SHIP TO NAME",
+                "SHIP ADDR LN1",
+                "SHIP ADDR LN2",
+                "SHIP CITY",
+                "SHIP STATE",
+                "SHIP ZIP",
+                "NEGNO",
+                " COSTTYPE",
+                "COSTDESC",
                 "                                                                                                                                                                                                                                                                                                                                                      "
             };
             #endregion
@@ -503,39 +552,6 @@ namespace SaveWorkbook
             return true;
         }
         #endregion
-
-        public void SaveVMI()
-        {
-            foreach (Excel.Worksheet s in ActiveWorkbook.Worksheets)
-            {
-                DateTime dt = DateTime.Now.AddMonths(-1);
-                Office.MsoFileDialogType dlgType = Office.MsoFileDialogType.msoFileDialogSaveAs;
-
-                if (s.Name != "Drop In" &&
-                    s.Name != "PivotTable" &&
-                    s.Name != "Info" &&
-                    s.Name != "Macro" &&
-                    s.Name != "VMI eStock" &&
-                    s.Name != "Master")
-                {
-                    s.Copy();
-                    if (s.Range["C5"].Text != "")
-                    {
-                        s.Columns[ActiveSheet.UsedRange.Columns.Count].Delete();
-                    }
-                    Application.FileDialog[dlgType].InitialFileName = s.Name + "_" + String.Format("{0:MMM_yyyy}", dt);
-                    Application.FileDialog[dlgType].Show();
-                    if (Application.FileDialog[dlgType].SelectedItems.Count > 0)
-                    {
-                        ActiveWorkbook.SaveAs(Application.FileDialog[dlgType].SelectedItems.Item(1), Excel.XlFileFormat.xlOpenXMLWorkbook);
-                    }
-                    Application.DisplayAlerts = false;
-                    ActiveWorkbook.Close();
-                    Application.DisplayAlerts = true;
-                }
-            }
-
-        }
 
         #region GAPS
         public void SaveGAPS()
@@ -708,6 +724,38 @@ namespace SaveWorkbook
             }
         }
 
+        public void SaveVMI()
+        {
+            foreach (Excel.Worksheet s in ActiveWorkbook.Worksheets)
+            {
+                DateTime dt = DateTime.Now.AddMonths(-1);
+                Office.MsoFileDialogType dlgType = Office.MsoFileDialogType.msoFileDialogSaveAs;
+
+                if (s.Name != "Drop In" &&
+                    s.Name != "PivotTable" &&
+                    s.Name != "Info" &&
+                    s.Name != "Macro" &&
+                    s.Name != "VMI eStock" &&
+                    s.Name != "Master")
+                {
+                    s.Copy();
+                    if (s.Range["C5"].Text != "")
+                    {
+                        s.Columns[ActiveSheet.UsedRange.Columns.Count].Delete();
+                    }
+                    Application.FileDialog[dlgType].InitialFileName = s.Name + "_" + String.Format("{0:MMM_yyyy}", dt);
+                    Application.FileDialog[dlgType].Show();
+                    if (Application.FileDialog[dlgType].SelectedItems.Count > 0)
+                    {
+                        ActiveWorkbook.SaveAs(Application.FileDialog[dlgType].SelectedItems.Item(1), Excel.XlFileFormat.xlOpenXMLWorkbook);
+                    }
+                    Application.DisplayAlerts = false;
+                    ActiveWorkbook.Close();
+                    Application.DisplayAlerts = true;
+                }
+            }
+
+        }
 
         public void SaveIROpenOrders()
         {
