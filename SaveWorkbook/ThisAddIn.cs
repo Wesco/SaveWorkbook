@@ -72,7 +72,7 @@ namespace SaveWorkbook
         {
             string reptype;
 
-            if (ActiveSheet.Range["A1"].Value != null)
+            if (!String.IsNullOrEmpty(ActiveSheet.Range["A1"].Value))
             {
                 int condition = (ActiveSheet.Range["A1"].Value).ToString().Length;
 
@@ -107,6 +107,11 @@ namespace SaveWorkbook
                     case "Sup":
                         if (IsIROOR())
                             SaveIROpenOrders();
+                        break;
+
+                    case "1AP":
+                        if (IsAP1000())
+                            SaveAP1000();
                         break;
 
                     default:
@@ -697,6 +702,39 @@ namespace SaveWorkbook
                 return false;
 
             return true;
+        }
+        #endregion
+
+        #region AP1000
+        private void SaveAP1000()
+        {
+            string repDate = DateTime.Parse(ActiveSheet.Range["A1"].Value.ToString().Substring(55, 8)).ToString("yyyyMMdd");
+            string fileName = "AP1000 " + repDate + ".xlsx";
+            string path = Properties.Settings.Default.PathAP1000;
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            try
+            {
+                ActiveWorkbook.SaveAs(path + fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+            }
+            catch (Exception e)
+            {
+                //If error is not due to user canceled save display the error message
+                if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
+                    System.Windows.Forms.MessageBox.Show(e.Message.ToString());
+            }
+        }
+
+        private bool IsAP1000()
+        {
+            string ReportHeader = ActiveSheet.Range["A1"].Value.ToString();
+
+            if (ReportHeader.Substring(6, 6) == "AP1000")
+                return true;
+
+            return false;
         }
         #endregion
 
