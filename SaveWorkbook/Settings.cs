@@ -12,6 +12,14 @@ namespace SaveWorkbook
 {
     public partial class frmSettings : Form
     {
+        Button btnGapsBrowse;
+        TextBox txtGapsPath;
+        Label lblGapsPath;
+
+        Button btn117Browse;
+        TextBox txt117Path;
+        Label lbl117Path;
+
         public frmSettings()
         {
             InitializeComponent();
@@ -138,6 +146,49 @@ namespace SaveWorkbook
 
         private void frmSettings_Load(object sender, EventArgs e)
         {
+            //Gaps Button
+            btnGapsBrowse = new Button();
+            btnGapsBrowse.Text = "Browse";
+            btnGapsBrowse.Name = "btnGapsBrowse";
+            btnGapsBrowse.Location = new Point(329, 10);
+            btnGapsBrowse.Click += btnGapsBrowse_Click;
+            this.Controls.Add(btnGapsBrowse);
+
+            //Gaps Textbox
+            txtGapsPath = new TextBox();
+            txtGapsPath.Width = 244;
+            txtGapsPath.Height = 20;
+            txtGapsPath.Name = "txtGapsPath";
+            txtGapsPath.Leave += txtGapsPath_Leave;
+            txtGapsPath.Location = new Point(btnGapsBrowse.Location.X - 250, btnGapsBrowse.Location.Y + 2);
+            this.Controls.Add(txtGapsPath);
+
+            //Gaps Label
+            lblGapsPath = new Label();
+            lblGapsPath.Size = new System.Drawing.Size(10, 10);
+            lblGapsPath.Text = "GAPS Path";
+            lblGapsPath.Name = "lblGapsPath";
+            this.Controls.Add(lblGapsPath);
+            lblGapsPath.AutoSize = true;
+            lblGapsPath.Location = new Point(txtGapsPath.Location.X - lblGapsPath.Width - 7, txtGapsPath.Location.Y + 3);
+
+            //117
+            btn117Browse = new Button();
+            btn117Browse.Text = "Browse";
+            btn117Browse.Name = "btn117Browse";
+            btn117Browse.Location = new Point(329, 36); // Y = previous buttion.Y + 26
+            this.Controls.Add(btn117Browse);
+
+            txt117Path = new TextBox();
+            txt117Path.Width = 244;
+            txt117Path.Height = 20;
+            txt117Path.Name = "txt117Path";
+            txt117Path.Location = new Point(btn117Browse.Location.X - 250, btn117Browse.Location.Y + 2);
+            this.Controls.Add(txt117Path);
+            
+            lbl117Path = new Label();
+
+            //Text
             txt117Path.Text = Properties.Settings.Default.Path117;
             txt473Path.Text = Properties.Settings.Default.Path473;
             txtGapsPath.Text = Properties.Settings.Default.PathGAPS;
@@ -172,6 +223,22 @@ namespace SaveWorkbook
         {
             Regex rxFilePath = new Regex(@"^(?:[A-Za-z]\:\\|\\\\[\w.]+\\)(?:[^\\ ][\w!@#$%^&()_+;'\.,  .]*\\)*$");
             return rxFilePath.IsMatch(path);
+        }
+
+        static private int StringWidth(Graphics graphics, string text, Font font)
+        {
+            System.Drawing.StringFormat format = new System.Drawing.StringFormat();
+            System.Drawing.RectangleF rect = new System.Drawing.RectangleF(0, 0,
+                                                                          1000, 1000);
+            System.Drawing.CharacterRange[] ranges = { new System.Drawing.CharacterRange(0, text.Length) };
+            System.Drawing.Region[] regions = new System.Drawing.Region[1];
+
+            format.SetMeasurableCharacterRanges(ranges);
+
+            regions = graphics.MeasureCharacterRanges(text, font, rect, format);
+            rect = regions[0].GetBounds(graphics);
+
+            return (int)(rect.Right + 1.0f);
         }
     }
 }

@@ -29,13 +29,9 @@ namespace SaveWorkbook
             get
             {
                 if (activeSheet != null)
-                {
                     return activeSheet;
-                }
                 else
-                {
                     return Application.ActiveSheet;
-                }
             }
 
             set
@@ -708,7 +704,7 @@ namespace SaveWorkbook
         #region AP1000
         private void SaveAP1000()
         {
-            string repDate = DateTime.Parse(ActiveSheet.Range["A1"].Value.ToString().Substring(55, 8)).ToString("yyyyMMdd");
+            string repDate = DateTime.Parse(ActiveSheet.Range["A1"].Value.ToString().Substring(55, 8)).ToString("yyyy-MM-dd");
             string fileName = "AP1000 " + repDate + ".xlsx";
             string path = Properties.Settings.Default.PathAP1000;
 

@@ -28,14 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblGapsPath = new System.Windows.Forms.Label();
-            this.lbl117Path = new System.Windows.Forms.Label();
             this.lbl473Path = new System.Windows.Forms.Label();
             this.txt473Path = new System.Windows.Forms.TextBox();
-            this.txt117Path = new System.Windows.Forms.TextBox();
-            this.txtGapsPath = new System.Windows.Forms.TextBox();
-            this.btnGapsBrowse = new System.Windows.Forms.Button();
-            this.btn117Browse = new System.Windows.Forms.Button();
             this.btn473Browse = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
@@ -43,26 +37,6 @@
             this.txt325Path = new System.Windows.Forms.TextBox();
             this.lbl325Path = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // lblGapsPath
-            // 
-            this.lblGapsPath.AutoSize = true;
-            this.lblGapsPath.Location = new System.Drawing.Point(8, 15);
-            this.lblGapsPath.Name = "lblGapsPath";
-            this.lblGapsPath.Size = new System.Drawing.Size(61, 13);
-            this.lblGapsPath.TabIndex = 99;
-            this.lblGapsPath.Text = "GAPS Path";
-            this.lblGapsPath.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // lbl117Path
-            // 
-            this.lbl117Path.AutoSize = true;
-            this.lbl117Path.Location = new System.Drawing.Point(20, 41);
-            this.lbl117Path.Name = "lbl117Path";
-            this.lbl117Path.Size = new System.Drawing.Size(50, 13);
-            this.lbl117Path.TabIndex = 100;
-            this.lbl117Path.Text = "117 Path";
-            this.lbl117Path.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // lbl473Path
             // 
@@ -82,42 +56,6 @@
             this.txt473Path.TabIndex = 5;
             this.txt473Path.Leave += new System.EventHandler(this.txt473Path_Leave);
             // 
-            // txt117Path
-            // 
-            this.txt117Path.Location = new System.Drawing.Point(79, 38);
-            this.txt117Path.Name = "txt117Path";
-            this.txt117Path.Size = new System.Drawing.Size(244, 20);
-            this.txt117Path.TabIndex = 3;
-            this.txt117Path.Leave += new System.EventHandler(this.txt117Path_Leave);
-            // 
-            // txtGapsPath
-            // 
-            this.txtGapsPath.Location = new System.Drawing.Point(79, 12);
-            this.txtGapsPath.Name = "txtGapsPath";
-            this.txtGapsPath.Size = new System.Drawing.Size(244, 20);
-            this.txtGapsPath.TabIndex = 1;
-            this.txtGapsPath.Leave += new System.EventHandler(this.txtGapsPath_Leave);
-            // 
-            // btnGapsBrowse
-            // 
-            this.btnGapsBrowse.Location = new System.Drawing.Point(329, 10);
-            this.btnGapsBrowse.Name = "btnGapsBrowse";
-            this.btnGapsBrowse.Size = new System.Drawing.Size(75, 23);
-            this.btnGapsBrowse.TabIndex = 2;
-            this.btnGapsBrowse.Text = "Browse";
-            this.btnGapsBrowse.UseVisualStyleBackColor = true;
-            this.btnGapsBrowse.Click += new System.EventHandler(this.btnGapsBrowse_Click);
-            // 
-            // btn117Browse
-            // 
-            this.btn117Browse.Location = new System.Drawing.Point(329, 36);
-            this.btn117Browse.Name = "btn117Browse";
-            this.btn117Browse.Size = new System.Drawing.Size(75, 23);
-            this.btn117Browse.TabIndex = 4;
-            this.btn117Browse.Text = "Browse";
-            this.btn117Browse.UseVisualStyleBackColor = true;
-            this.btn117Browse.Click += new System.EventHandler(this.btn117Browse_Click);
-            // 
             // btn473Browse
             // 
             this.btn473Browse.Location = new System.Drawing.Point(329, 62);
@@ -130,6 +68,7 @@
             // 
             // btnCancel
             // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Location = new System.Drawing.Point(329, 126);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
@@ -187,14 +126,8 @@
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btn473Browse);
-            this.Controls.Add(this.btn117Browse);
-            this.Controls.Add(this.btnGapsBrowse);
-            this.Controls.Add(this.txtGapsPath);
-            this.Controls.Add(this.txt117Path);
             this.Controls.Add(this.txt473Path);
             this.Controls.Add(this.lbl473Path);
-            this.Controls.Add(this.lbl117Path);
-            this.Controls.Add(this.lblGapsPath);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "frmSettings";
             this.Text = "Settings";
@@ -207,14 +140,8 @@
 
         #endregion
 
-        private System.Windows.Forms.Label lblGapsPath;
-        private System.Windows.Forms.Label lbl117Path;
         private System.Windows.Forms.Label lbl473Path;
         private System.Windows.Forms.TextBox txt473Path;
-        private System.Windows.Forms.TextBox txt117Path;
-        private System.Windows.Forms.TextBox txtGapsPath;
-        private System.Windows.Forms.Button btnGapsBrowse;
-        private System.Windows.Forms.Button btn117Browse;
         private System.Windows.Forms.Button btn473Browse;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnSave;
