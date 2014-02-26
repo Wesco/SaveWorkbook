@@ -12,13 +12,25 @@ namespace SaveWorkbook
 {
     public partial class frmSettings : Form
     {
+        //Gaps
         Button btnGapsBrowse;
         TextBox txtGapsPath;
         Label lblGapsPath;
 
+        //117
         Button btn117Browse;
         TextBox txt117Path;
         Label lbl117Path;
+
+        //473
+        Button btn473Browse;
+        TextBox txt473Path;
+        Label lbl473Path;
+
+        //325
+        Button btn325Browse;
+        TextBox txt325Path;
+        Label lbl325Path;
 
         public frmSettings()
         {
@@ -146,11 +158,14 @@ namespace SaveWorkbook
 
         private void frmSettings_Load(object sender, EventArgs e)
         {
+            int prevBtnY = 10;
+
+            #region Gaps
             //Gaps Button
             btnGapsBrowse = new Button();
             btnGapsBrowse.Text = "Browse";
             btnGapsBrowse.Name = "btnGapsBrowse";
-            btnGapsBrowse.Location = new Point(329, 10);
+            btnGapsBrowse.Location = new Point(329, prevBtnY);
             btnGapsBrowse.Click += btnGapsBrowse_Click;
             this.Controls.Add(btnGapsBrowse);
 
@@ -161,38 +176,98 @@ namespace SaveWorkbook
             txtGapsPath.Name = "txtGapsPath";
             txtGapsPath.Leave += txtGapsPath_Leave;
             txtGapsPath.Location = new Point(btnGapsBrowse.Location.X - 250, btnGapsBrowse.Location.Y + 2);
+            txtGapsPath.Text = Properties.Settings.Default.PathGAPS;
             this.Controls.Add(txtGapsPath);
 
             //Gaps Label
             lblGapsPath = new Label();
-            lblGapsPath.Size = new System.Drawing.Size(10, 10);
             lblGapsPath.Text = "GAPS Path";
             lblGapsPath.Name = "lblGapsPath";
             this.Controls.Add(lblGapsPath);
             lblGapsPath.AutoSize = true;
             lblGapsPath.Location = new Point(txtGapsPath.Location.X - lblGapsPath.Width - 7, txtGapsPath.Location.Y + 3);
+            #endregion
 
-            //117
+            #region 117
+            //117 Button
             btn117Browse = new Button();
             btn117Browse.Text = "Browse";
             btn117Browse.Name = "btn117Browse";
-            btn117Browse.Location = new Point(329, 36); // Y = previous buttion.Y + 26
+            btn117Browse.Location = new Point(329, prevBtnY += 26);
+            btn117Browse.Click += btn117Browse_Click;
             this.Controls.Add(btn117Browse);
 
+            //117 Textbox
             txt117Path = new TextBox();
             txt117Path.Width = 244;
             txt117Path.Height = 20;
             txt117Path.Name = "txt117Path";
             txt117Path.Location = new Point(btn117Browse.Location.X - 250, btn117Browse.Location.Y + 2);
+            txt117Path.Text = Properties.Settings.Default.Path117;
             this.Controls.Add(txt117Path);
             
+            //117 Label
             lbl117Path = new Label();
+            lbl117Path.Text = "117 Path";
+            lbl117Path.Name = "lbl117Path";
+            this.Controls.Add(lbl117Path);
+            lbl117Path.AutoSize = true;
+            lbl117Path.Location = new Point(txt117Path.Location.X - lbl117Path.Width - 8, txt117Path.Location.Y + 3);
+            #endregion
 
-            //Text
-            txt117Path.Text = Properties.Settings.Default.Path117;
+            #region 473
+            //473 Button
+            btn473Browse = new Button();
+            btn473Browse.Text = "Browse";
+            btn473Browse.Name = "btn473Browse";
+            btn473Browse.Location = new Point(329, prevBtnY += 26);
+            btn473Browse.Click += btn473Browse_Click;
+            this.Controls.Add(btn473Browse);
+
+            //473 Textbox
+            txt473Path = new TextBox();
+            txt473Path.Width = 244;
+            txt473Path.Height = 20;
+            txt473Path.Name = "txt473Path";
+            txt473Path.Location = new Point(btn473Browse.Location.X - 250, btn473Browse.Location.Y + 2);
             txt473Path.Text = Properties.Settings.Default.Path473;
-            txtGapsPath.Text = Properties.Settings.Default.PathGAPS;
+            this.Controls.Add(txt473Path);
+
+            //473 Label
+            lbl473Path = new Label();
+            lbl473Path.Text = "473 Path";
+            lbl473Path.Name = "lbl473Path";
+            this.Controls.Add(lbl473Path);
+            lbl473Path.AutoSize = true;
+            lbl473Path.Location = new Point(txt473Path.Location.X - lbl473Path.Width - 8, txt473Path.Location.Y + 3);
+            #endregion
+
+            #region 325
+            //325 Button
+            btn325Browse = new Button();
+            btn325Browse.Text = "Browse";
+            btn325Browse.Name = "btn325Browse";
+            btn325Browse.Location = new Point(329, prevBtnY += 26);
+            btn325Browse.Click += btn325Browse_Click;
+            this.Controls.Add(btn325Browse);
+
+            //325 Textbox
+            txt325Path = new TextBox();
+            txt325Path.Width = 244;
+            txt325Path.Height = 20;
+            txt325Path.Name = "txt325Path";
+            txt325Path.Location = new Point(btn325Browse.Location.X - 250, btn325Browse.Location.Y + 2);
             txt325Path.Text = Properties.Settings.Default.Path325;
+            this.Controls.Add(txt325Path);
+
+            //325 Label
+            lbl325Path = new Label();
+            lbl325Path.Text = "325 Path";
+            lbl325Path.Name = "lbl325Path";
+            this.Controls.Add(lbl325Path);
+            lbl325Path.AutoSize = true;
+            lbl325Path.Location = new Point(txt325Path.Location.X - lbl325Path.Width - 8, txt325Path.Location.Y + 3);
+            #endregion
         }
 
         private bool SetPath(out string path)
