@@ -12,6 +12,7 @@ namespace SaveWorkbook
 {
     public partial class frmSettings : Form
     {
+        #region Controls
         //Gaps
         Button btnGapsBrowse;
         TextBox txtGapsPath;
@@ -32,12 +33,24 @@ namespace SaveWorkbook
         TextBox txt325Path;
         Label lbl325Path;
 
+        //AP1000
+        Button btnAP1000Browse;
+        TextBox txtAP1000Path;
+        Label lblAP1000Path;
+
+        //Save
+        Button btnSave;
+
+        //Cancel
+        Button btnCancel;
+        #endregion
+
         public frmSettings()
         {
             InitializeComponent();
         }
 
-        #region Buttons
+        #region Button_Events
         private void btnGapsBrowse_Click(object sender, EventArgs e)
         {
             string path;
@@ -70,26 +83,34 @@ namespace SaveWorkbook
                 txt325Path.Text = path;
         }
 
+        void btnAP1000Browse_Click(object sender, EventArgs e)
+        {
+            string path;
+
+            if (SetPath(out path))
+                txtAP1000Path.Text = path;
+        }
+
         private void btnSave_Click(object sender, EventArgs e)
         {
-
-            if (IsValidPath(txt117Path.Text) & IsValidPath(txt473Path.Text) & IsValidPath(txtGapsPath.Text))
+            foreach (Control control in this.Controls)
             {
-                if (IsValidPath(txt117Path.Text))
-                    Properties.Settings.Default.Path117 = txt117Path.Text;
-
-                if (IsValidPath(txt473Path.Text))
-                    Properties.Settings.Default.Path473 = txt473Path.Text;
-
-                if (IsValidPath(txtGapsPath.Text))
-                    Properties.Settings.Default.PathGAPS = txtGapsPath.Text;
-
-                if (IsValidPath(txt325Path.Text))
-                    Properties.Settings.Default.Path325 = txt325Path.Text;
-
-                Properties.Settings.Default.Save();
-                this.Close();
+                if (control is TextBox)
+                {
+                    if (!IsValidPath(control.Text))
+                        return;
+                }
             }
+
+            Properties.Settings.Default.Path117 = txt117Path.Text;
+            Properties.Settings.Default.Path473 = txt473Path.Text;
+            Properties.Settings.Default.PathGAPS = txtGapsPath.Text;
+            Properties.Settings.Default.Path325 = txt325Path.Text;
+            Properties.Settings.Default.PathAP1000 = txtAP1000Path.Text;
+
+            Properties.Settings.Default.Save();
+            MessageBox.Show("Settings Saved!", "Success");
+            this.Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -159,6 +180,7 @@ namespace SaveWorkbook
         private void frmSettings_Load(object sender, EventArgs e)
         {
             int prevBtnY = 10;
+            int txtCounter = 0;
 
             #region Gaps
             //Gaps Button
@@ -205,7 +227,7 @@ namespace SaveWorkbook
             txt117Path.Location = new Point(btn117Browse.Location.X - 250, btn117Browse.Location.Y + 2);
             txt117Path.Text = Properties.Settings.Default.Path117;
             this.Controls.Add(txt117Path);
-            
+
             //117 Label
             lbl117Path = new Label();
             lbl117Path.Text = "117 Path";
@@ -267,6 +289,63 @@ namespace SaveWorkbook
             this.Controls.Add(lbl325Path);
             lbl325Path.AutoSize = true;
             lbl325Path.Location = new Point(txt325Path.Location.X - lbl325Path.Width - 8, txt325Path.Location.Y + 3);
+            #endregion
+
+            #region AP1000
+            //AP1000 Button
+            btnAP1000Browse = new Button();
+            btnAP1000Browse.Text = "Browse";
+            btnAP1000Browse.Name = "btnAP1000Browse";
+            btnAP1000Browse.Location = new Point(329, prevBtnY += 26);
+            btnAP1000Browse.Click += btnAP1000Browse_Click;
+            this.Controls.Add(btnAP1000Browse);
+
+            //AP1000 Textbox
+            txtAP1000Path = new TextBox();
+            txtAP1000Path.Width = 244;
+            txtAP1000Path.Height = 20;
+            txtAP1000Path.Name = "txtAP1000Path";
+            txtAP1000Path.Location = new Point(btnAP1000Browse.Location.X - 250, btnAP1000Browse.Location.Y + 2);
+            txtAP1000Path.Text = Properties.Settings.Default.PathAP1000;
+            this.Controls.Add(txtAP1000Path);
+
+            //AP1000 Label
+            lblAP1000Path = new Label();
+            lblAP1000Path.Text = "AP1000 Path";
+            lblAP1000Path.Name = "lblAP1000Path";
+            this.Controls.Add(lblAP1000Path);
+            lblAP1000Path.AutoSize = true;
+            lblAP1000Path.Location = new Point(txtAP1000Path.Location.X - lblAP1000Path.Width - 8, txtAP1000Path.Location.Y + 3);
+            #endregion
+
+            #region FormHeight
+            foreach (Control control in this.Controls)
+            {
+                if (control is TextBox)
+                {
+                    txtCounter += 1;
+                }
+            }
+
+            this.Height = (txtCounter * 20) + (6 * (txtCounter - 1)) + 87;
+            #endregion
+
+            #region SaveBtn
+            btnSave = new Button();
+            btnSave.Text = "Save";
+            btnSave.Name = "btnSave";
+            btnSave.Location = new Point(248, this.Height - 59);
+            btnSave.Click += btnSave_Click;
+            this.Controls.Add(btnSave);
+            #endregion
+
+            #region CancelBtn
+            btnCancel = new Button();
+            btnCancel.Text = "Cancel";
+            btnCancel.Name = "btnCancel";
+            btnCancel.Location = new Point(329, this.Height - 59);
+            btnCancel.Click += btnCancel_Click;
+            this.Controls.Add(btnCancel);
             #endregion
         }
 

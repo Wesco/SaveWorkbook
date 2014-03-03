@@ -14,7 +14,7 @@ using System.Globalization;
 
 namespace SaveWorkbook
 {
-    public class App
+    public class oApp
     {
         public static ThisAddIn thisAddin { get; set; }
     }
@@ -962,7 +962,7 @@ namespace SaveWorkbook
         #region AddIn_Events
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
-            App.thisAddin = this;
+            oApp.thisAddin = this;
             Application.WorkbookActivate += Application_WorkbookActivate;
             Application.SheetActivate += Application_SheetActivate;
             Application.WorkbookOpen += Application_WorkbookOpen;

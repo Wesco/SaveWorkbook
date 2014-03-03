@@ -7,6 +7,7 @@ using Microsoft.Office.Tools.Ribbon;
 using Excel = Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
 using Microsoft.Office.Tools.Excel;
+using System.Windows.Forms;
 
 namespace SaveWorkbook
 {
@@ -14,18 +15,22 @@ namespace SaveWorkbook
     {
         private void btnSave_Click(object sender, RibbonControlEventArgs e)
         {
-            App.thisAddin.SaveReport();
+            oApp.thisAddin.SaveReport();
         }
 
         private void btnVMI_Click(object sender, RibbonControlEventArgs e)
         {
-            App.thisAddin.SaveVMI();
+            oApp.thisAddin.SaveVMI();
         }
 
         private void btnConfigure_Click(object sender, RibbonControlEventArgs e)
         {
             frmSettings frm = new frmSettings();
-            frm.Show();
+
+            if (Application.OpenForms[frm.Name] == null)
+                frm.Show();
+            else
+                Application.OpenForms[frm.Name].Focus();
         }
     }
 }
