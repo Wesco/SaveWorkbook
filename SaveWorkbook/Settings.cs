@@ -51,44 +51,17 @@ namespace SaveWorkbook
         }
 
         #region Button_Events
-        private void btnGapsBrowse_Click(object sender, EventArgs e)
+        private void btnBrowse_Click(object sender, EventArgs e)
         {
+            if (!(sender is Button))
+                return;
+
+            Button btn = (Button)sender;
+            TextBox tb = (TextBox)this.Controls["txt" + btn.Name.Substring(3, btn.Name.Length - 9) + "Path"];
             string path;
 
             if (SetPath(out path))
-                txtGapsPath.Text = path;
-        }
-
-        private void btn117Browse_Click(object sender, EventArgs e)
-        {
-            string path;
-
-            if (SetPath(out path))
-                txt117Path.Text = path;
-        }
-
-        private void btn473Browse_Click(object sender, EventArgs e)
-        {
-            string path;
-
-            if (SetPath(out path))
-                txt473Path.Text = path;
-        }
-
-        private void btn325Browse_Click(object sender, EventArgs e)
-        {
-            string path;
-
-            if (SetPath(out path))
-                txt325Path.Text = path;
-        }
-
-        void btnAP1000Browse_Click(object sender, EventArgs e)
-        {
-            string path;
-
-            if (SetPath(out path))
-                txtAP1000Path.Text = path;
+                tb.Text = path;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -120,60 +93,23 @@ namespace SaveWorkbook
         #endregion
 
         #region LostFocus events
-        private void txtGapsPath_Leave(object sender, EventArgs e)
+        private void txtBox_Leave(object sender, EventArgs e)
         {
-            if (txtGapsPath.Text.Right(1) != @"\")
-                txtGapsPath.Text += @"\";
+            if (!(sender is TextBox))
+                return;
 
-            if (IsValidPath(txtGapsPath.Text))
+            TextBox tb = (TextBox)sender;
+
+            if (tb.Text.Right(1) != @"\")
+                tb.Text += @"\";
+
+            if (IsValidPath(tb.Text))
             {
-                txtGapsPath.BackColor = Color.White;
-                Properties.Settings.Default.PathGAPS = txtGapsPath.Text;
+                tb.BackColor = Color.White;
+                Properties.Settings.Default.PathGAPS = tb.Text;
             }
             else
-                txtGapsPath.BackColor = Color.LightPink;
-        }
-
-        private void txt117Path_Leave(object sender, EventArgs e)
-        {
-            if (txt117Path.Text.Right(1) != @"\")
-                txt117Path.Text += @"\";
-
-            if (IsValidPath(txt117Path.Text))
-            {
-                txt117Path.BackColor = Color.White;
-                Properties.Settings.Default.Path117 = txt117Path.Text;
-            }
-            else
-                txt117Path.BackColor = Color.LightPink;
-        }
-
-        private void txt473Path_Leave(object sender, EventArgs e)
-        {
-            if (txt473Path.Text.Right(1) != @"\")
-                txt473Path.Text += @"\";
-
-            if (IsValidPath(txt473Path.Text))
-            {
-                txt473Path.BackColor = Color.White;
-                Properties.Settings.Default.Path473 = txt473Path.Text;
-            }
-            else
-                txt473Path.BackColor = Color.LightPink;
-        }
-
-        private void txt325Path_Leave(object sender, EventArgs e)
-        {
-            if (txt325Path.Text.Right(1) != @"\")
-                txt325Path.Text += @"\";
-
-            if (IsValidPath(txt325Path.Text))
-            {
-                txt325Path.BackColor = Color.White;
-                Properties.Settings.Default.Path325 = txt473Path.Text;
-            }
-            else
-                txt473Path.BackColor = Color.LightPink;
+                tb.BackColor = Color.LightPink;
         }
         #endregion
 
@@ -185,18 +121,20 @@ namespace SaveWorkbook
             #region Gaps
             //Gaps Button
             btnGapsBrowse = new Button();
+            btnGapsBrowse.TabIndex = 2;
             btnGapsBrowse.Text = "Browse";
             btnGapsBrowse.Name = "btnGapsBrowse";
             btnGapsBrowse.Location = new Point(329, prevBtnY);
-            btnGapsBrowse.Click += btnGapsBrowse_Click;
+            btnGapsBrowse.Click += btnBrowse_Click;
             this.Controls.Add(btnGapsBrowse);
 
             //Gaps Textbox
             txtGapsPath = new TextBox();
             txtGapsPath.Width = 244;
             txtGapsPath.Height = 20;
+            txtGapsPath.TabIndex = 1;
             txtGapsPath.Name = "txtGapsPath";
-            txtGapsPath.Leave += txtGapsPath_Leave;
+            txtGapsPath.Leave += txtBox_Leave;
             txtGapsPath.Location = new Point(btnGapsBrowse.Location.X - 250, btnGapsBrowse.Location.Y + 2);
             txtGapsPath.Text = Properties.Settings.Default.PathGAPS;
             this.Controls.Add(txtGapsPath);
@@ -213,17 +151,20 @@ namespace SaveWorkbook
             #region 117
             //117 Button
             btn117Browse = new Button();
+            btn117Browse.TabIndex = 4;
             btn117Browse.Text = "Browse";
             btn117Browse.Name = "btn117Browse";
             btn117Browse.Location = new Point(329, prevBtnY += 26);
-            btn117Browse.Click += btn117Browse_Click;
+            btn117Browse.Click += btnBrowse_Click;
             this.Controls.Add(btn117Browse);
 
             //117 Textbox
             txt117Path = new TextBox();
             txt117Path.Width = 244;
             txt117Path.Height = 20;
+            txt117Path.TabIndex = 3;
             txt117Path.Name = "txt117Path";
+            txt117Path.Leave += txtBox_Leave;
             txt117Path.Location = new Point(btn117Browse.Location.X - 250, btn117Browse.Location.Y + 2);
             txt117Path.Text = Properties.Settings.Default.Path117;
             this.Controls.Add(txt117Path);
@@ -240,17 +181,20 @@ namespace SaveWorkbook
             #region 473
             //473 Button
             btn473Browse = new Button();
+            btn473Browse.TabIndex = 6;
             btn473Browse.Text = "Browse";
             btn473Browse.Name = "btn473Browse";
             btn473Browse.Location = new Point(329, prevBtnY += 26);
-            btn473Browse.Click += btn473Browse_Click;
+            btn473Browse.Click += btnBrowse_Click;
             this.Controls.Add(btn473Browse);
 
             //473 Textbox
             txt473Path = new TextBox();
             txt473Path.Width = 244;
             txt473Path.Height = 20;
+            txt473Path.TabIndex = 5;
             txt473Path.Name = "txt473Path";
+            txt473Path.Leave += txtBox_Leave;
             txt473Path.Location = new Point(btn473Browse.Location.X - 250, btn473Browse.Location.Y + 2);
             txt473Path.Text = Properties.Settings.Default.Path473;
             this.Controls.Add(txt473Path);
@@ -267,17 +211,20 @@ namespace SaveWorkbook
             #region 325
             //325 Button
             btn325Browse = new Button();
+            btn325Browse.TabIndex = 8;
             btn325Browse.Text = "Browse";
             btn325Browse.Name = "btn325Browse";
             btn325Browse.Location = new Point(329, prevBtnY += 26);
-            btn325Browse.Click += btn325Browse_Click;
+            btn325Browse.Click += btnBrowse_Click;
             this.Controls.Add(btn325Browse);
 
             //325 Textbox
             txt325Path = new TextBox();
             txt325Path.Width = 244;
             txt325Path.Height = 20;
+            txt325Path.TabIndex = 7;
             txt325Path.Name = "txt325Path";
+            txt325Path.Leave += txtBox_Leave;
             txt325Path.Location = new Point(btn325Browse.Location.X - 250, btn325Browse.Location.Y + 2);
             txt325Path.Text = Properties.Settings.Default.Path325;
             this.Controls.Add(txt325Path);
@@ -294,17 +241,20 @@ namespace SaveWorkbook
             #region AP1000
             //AP1000 Button
             btnAP1000Browse = new Button();
+            btnAP1000Browse.TabIndex = 10;
             btnAP1000Browse.Text = "Browse";
             btnAP1000Browse.Name = "btnAP1000Browse";
             btnAP1000Browse.Location = new Point(329, prevBtnY += 26);
-            btnAP1000Browse.Click += btnAP1000Browse_Click;
+            btnAP1000Browse.Click += btnBrowse_Click;
             this.Controls.Add(btnAP1000Browse);
 
             //AP1000 Textbox
             txtAP1000Path = new TextBox();
             txtAP1000Path.Width = 244;
             txtAP1000Path.Height = 20;
+            txtAP1000Path.TabIndex = 9;
             txtAP1000Path.Name = "txtAP1000Path";
+            txtAP1000Path.Leave += txtBox_Leave;
             txtAP1000Path.Location = new Point(btnAP1000Browse.Location.X - 250, btnAP1000Browse.Location.Y + 2);
             txtAP1000Path.Text = Properties.Settings.Default.PathAP1000;
             this.Controls.Add(txtAP1000Path);
@@ -334,6 +284,7 @@ namespace SaveWorkbook
             btnSave = new Button();
             btnSave.Text = "Save";
             btnSave.Name = "btnSave";
+            btnSave.TabIndex = 11;
             btnSave.Location = new Point(248, this.Height - 59);
             btnSave.Click += btnSave_Click;
             this.Controls.Add(btnSave);
@@ -343,9 +294,15 @@ namespace SaveWorkbook
             btnCancel = new Button();
             btnCancel.Text = "Cancel";
             btnCancel.Name = "btnCancel";
+            btnCancel.TabIndex = 12;
             btnCancel.Location = new Point(329, this.Height - 59);
             btnCancel.Click += btnCancel_Click;
             this.Controls.Add(btnCancel);
+            #endregion
+
+            #region form_settings
+            this.CancelButton = btnCancel;
+            this.AcceptButton = btnSave;
             #endregion
         }
 
@@ -382,8 +339,7 @@ namespace SaveWorkbook
         static private int StringWidth(Graphics graphics, string text, Font font)
         {
             System.Drawing.StringFormat format = new System.Drawing.StringFormat();
-            System.Drawing.RectangleF rect = new System.Drawing.RectangleF(0, 0,
-                                                                          1000, 1000);
+            System.Drawing.RectangleF rect = new System.Drawing.RectangleF(0, 0, 1000, 1000);
             System.Drawing.CharacterRange[] ranges = { new System.Drawing.CharacterRange(0, text.Length) };
             System.Drawing.Region[] regions = new System.Drawing.Region[1];
 
