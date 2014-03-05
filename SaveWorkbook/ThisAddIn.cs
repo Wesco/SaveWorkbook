@@ -77,42 +77,40 @@ namespace SaveWorkbook
                 else
                     reptype = String.Empty;
 
-                switch (reptype)
+                if (reptype == "117")
                 {
-                    case "117":
-                        if (Is117())
-                            Save117();
-                        else
-                            MessageBox.Show(RepNotHandled, "RepType 117 - Error");
-                        break;
-
-                    case "473":
-                        if (Is473())
-                            Save473();
-                        break;
-
-                    case "Bra":
-                        if (IsGaps())
-                            SaveGAPS();
-                        break;
-
-                    case "SIM":
-                        Save325();
-                        break;
-
-                    case "Sup":
-                        if (IsIROOR())
-                            SaveIROpenOrders();
-                        break;
-
-                    case "1AP":
-                        if (IsAP1000())
-                            SaveAP1000();
-                        break;
-
-                    default:
-                        MessageBox.Show(RepNotHandled);
-                        break;
+                    if (Is117())
+                        Save117();
+                    else
+                        MessageBox.Show(RepNotHandled, "RepType 117 - Error");
+                }
+                else if (reptype == String.Format("{0:MMM}", DateTime.Now).ToUpper())
+                {
+                    if (Is473())
+                        Save473();
+                }
+                else if (reptype == "Bra")
+                {
+                    if (IsGaps())
+                        SaveGAPS();
+                }
+                else if (reptype == "SIM")
+                {
+                    Save325();
+                }
+                else if (reptype == "Sup")
+                {
+                    if (IsIROOR())
+                        SaveIROpenOrders();
+                }
+                else if (reptype == "1AP")
+                {
+                    if (IsAP1000())
+                        SaveAP1000();
+                }
+                else
+                {
+                    MessageBox.Show(RepNotHandled);
                 }
             }
             else
@@ -450,92 +448,19 @@ namespace SaveWorkbook
         public void Save473()
         {
             string fileName = "473 " + Today() + ".xlsx";
-            string reportType = (ActiveSheet.Range["A1"].Value).ToString();
             string branch = (ActiveSheet.Range["A3"].Value).ToString();
             string path = Properties.Settings.Default.Path473 + branch + @" 473 Download\";
 
-            //Verify that report is a 473 Open Order Report
-            if (reportType.Length > 3)
-            {
-                reportType = reportType.Substring(0, 3);
-
-                //If it is a 473 then try to save
-                if (reportType == "473")
-                {
-                    if (!Directory.Exists(path))
-                        Directory.CreateDirectory(path);
-
-                    try
-                    {
-                        ActiveWorkbook.SaveAs(path + fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
-                    }
-                    catch (Exception e)
-                    {
-                        //If error is not due to user canceled save display the error message
-                        if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
-                            System.Windows.Forms.MessageBox.Show(e.Message.ToString());
-                    }
-                }
-            }
+            SaveActiveBook(path, fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
         }
 
         public bool Is473()
         {
             #region Column Headers
-            string[] RepHeaders = new string[51]
+            string[] RepHeaders = new string[56]
             {
-                "BRANCH",
-                "ERROR",
-                "PO NUMBER",
-                "PO TYPE",
-                "SHIPPING INSTRUCTIONS 1",
-                "SHIPPING INSTRUCTIONS 2",
-                " SUPPLIER",
-                "SHIP TO",
-                "DS ORDER",
-                "PO DATE",
-                "PO STATUS",
-                "REQUESTED",
-                "ACKNOWLEDGE",
-                "TERMS CODE",
-                "TERMS DAYS",
-                "REFERENCE",
-                "DISC.%",
-                "FOB",
-                "BOL",
-                "SHIPPING TERMS",
-                "LINE",
-                "T",
-                "SIM",
-                "DESCRIPTION",
-                "UOM",
-                "PROMISED",
-                "QTY ORD",
-                "QTY REC",
-                "QTY INV",
-                "LAST REC",
-                "PRICE",
-                "EXTENSION",
-                "EST",
-                "ORDER",
-                "LINE",
-                "SUPPLIER NAME",
-                "ADDRESS LINE1",
-                "ADDRESS LINE2",
-                "CITY",
-                "ST",
-                "ZIP",
-                "SHIP TO NAME",
-                "SHIP ADDR LN1",
-                "SHIP ADDR LN2",
-                "SHIP CITY",
-                "SHIP STATE",
-                "SHIP ZIP",
-                "NEGNO",
-                " COSTTYPE",
-                "COSTDESC",
-                "                                                                                                                                                                                                                                                                                                                                                      "
-            };
+                "BRANCH",                "ERROR",                "PO NUMBER",                "PO TYPE",                "PO CREATED USERID",                "PO LAST CHANGED USERID",                "SHIPPING INSTRUCTIONS 1",                "SHIPPING INSTRUCTIONS 2",                " SUPPLIER",                "SHIP TO",                "DS ORDER",                "PO DATE",                "PO STATUS",                "REQUESTED",                "ACKNOWLEDGE",                "TERMS CODE",                "TERMS DAYS",                "REFERENCE",                "DISC.%",                "FOB",                "BOL",                "SHIPPING TERMS",                "LINE",                "T",                "SIM",                "DESCRIPTION",                "UOM",                "FACTOR",                "PROMISED",                "QTY ORD",                "QTY REC",                "QTY INV",                "OPEN QTY",                "OPEN AP QTY",                "LAST REC",                "PRICE",                "EXTENSION",                "EST",                "ORDER",                "LINE",                "SUPPLIER NAME",                "ADDRESS LINE1",                "ADDRESS LINE2",                "CITY",                "ST",                "ZIP",                "SHIP TO NAME",                "SHIP ADDR LN1",                "SHIP ADDR LN2",                "SHIP CITY",                "SHIP STATE",                "SHIP ZIP",                "NEGNO",                " COSTTYPE",                "COSTDESC",                "                                                                                                                                                                                                                                                                                           "
+        };
             #endregion
 
             int TotalCols = ActiveSheet.UsedRange.Columns.Count;
@@ -711,16 +636,7 @@ namespace SaveWorkbook
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
-            try
-            {
-                ActiveWorkbook.SaveAs(path + fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
-            }
-            catch (Exception e)
-            {
-                //If error is not due to user canceled save display the error message
-                if (e.Message.ToLower() != "exception from hresult: 0x800a03ec")
-                    System.Windows.Forms.MessageBox.Show(e.Message.ToString());
-            }
+            SaveActiveBook(path, fileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
         }
 
         private bool IsAP1000()
