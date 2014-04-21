@@ -63,5 +63,43 @@ namespace SaveWorkbook
 
             return ItemList.Count != ItemList.Distinct().Count();
         }
+
+        /// <summary>
+        /// Converts the data to a string.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>Returns the value as a string.</returns>
+        public static string Value3(this Range value)
+        {
+            string Result;
+
+            if (value.Value == null)
+                Result = String.Empty;
+            else if (String.IsNullOrEmpty(value.Value.ToString()))
+                Result = String.Empty;
+            else
+                Result = value.Value.ToString();
+            return Result;
+        }
+
+        /// <summary>
+        /// Converts the data to a string.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>Returns the value as a string.</returns>
+        public static string Value3(this Range value, string format)
+        {
+            string Result;
+
+            if (value.Value == null)
+                Result = String.Empty;
+            else if (String.IsNullOrEmpty(value.Value.ToString()))
+                Result = String.Empty;
+            else
+            {
+                Result = value.Value.ToString(format);
+            }
+            return Result;
+        }
     }
 }

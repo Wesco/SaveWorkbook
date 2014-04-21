@@ -207,7 +207,22 @@ namespace SaveWorkbook
                     break;
                 #endregion
 
-                // By Order Date not handled
+                #region ByOrderDate
+                case "ByOrderDate":
+                    string dt = ActiveSheet.Range["H3"].Value3("yyyy-mm-dd");
+                    for (int i = 3; i < ActiveSheet.UsedRange.Rows.Count; i++)
+                    {
+                        if (ActiveSheet.Range["H" + i].Value3("yyyy-mm-dd") != dt)
+                        {
+                            MessageBox.Show("Multiple dates were found.", "Sequence ByOrderDate - Error");
+                            return;
+                        }
+                    }
+
+                    SavePath += Sequence + "\\";
+                    break;
+                #endregion
+
                 // By SIM Number not handled
                 // By Gross Margin not handled
                 // By Dollar Amount not handled
@@ -309,7 +324,7 @@ namespace SaveWorkbook
             }
             #endregion
 
-            SaveActiveBook(SavePath, FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+            SaveActiveBook(SavePath, FileName, Excel.XlFileFormat.xlCSV);
         }
 
         private bool Is117()
@@ -819,8 +834,9 @@ namespace SaveWorkbook
                 {
                     bool PrevDispAlert = Application.DisplayAlerts;
                     Application.DisplayAlerts = false;
-                    ActiveWorkbook.SaveAs(Path + FileName, Excel.XlFileFormat.xlOpenXMLWorkbook);
+                    ActiveWorkbook.SaveAs(Path + FileName, FileFormat);
                     Application.DisplayAlerts = PrevDispAlert;
+                    ActiveWorkbook.Saved = true;
                 }
             }
             catch (System.Runtime.InteropServices.COMException e)
