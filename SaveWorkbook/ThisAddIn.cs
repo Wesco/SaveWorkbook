@@ -108,6 +108,11 @@ namespace SaveWorkbook
                     if (IsAP1000())
                         SaveAP1000();
                 }
+                else if (reptype == DateTime.Now.ToString("MM/"))
+                {
+                    if (IsPOI())
+                        SavePOI();
+                }
                 else
                 {
                     MessageBox.Show(RepNotHandled);
@@ -209,16 +214,17 @@ namespace SaveWorkbook
 
                 #region ByOrderDate
                 case "ByOrderDate":
-                    string dt = ActiveSheet.Range["H3"].Value3("yyyy-mm-dd");
+                    string dt = ActiveSheet.Range["H3"].Value3("yyyy-MM-dd");
                     for (int i = 3; i < ActiveSheet.UsedRange.Rows.Count; i++)
                     {
-                        if (ActiveSheet.Range["H" + i].Value3("yyyy-mm-dd") != dt)
+                        if (ActiveSheet.Range["H" + i].Value3("yyyy-MM-dd") != dt)
                         {
                             MessageBox.Show("Multiple dates were found.", "Sequence ByOrderDate - Error");
                             return;
                         }
                     }
 
+                    FileName = Branch + " " + dt;
                     SavePath += Sequence + "\\";
                     break;
                 #endregion
@@ -718,6 +724,67 @@ namespace SaveWorkbook
 
             return false;
         }
+        #endregion
+
+        #region POI
+        private bool IsPOI()
+        {
+            string Identifier = ActiveSheet.Range["A1"].Value3();
+            int TotalCols = ActiveSheet.UsedRange.Columns.Count;
+            #region Column Headers
+            string[] ReportHeaders = new string[52] 
+            {
+                "BRANCH",                " PO NUMBER",                "PO DATE",                "PO TYPE",                "SUPPLIER",                "NAME",                "ADDRESS LINE 1",                "ADDRESS LINE 2",                "CITY",                "STATE",                "ZIP",                "SHIP TO",                "NAME",                "ADDRESS LINE 1",                "ADDRESS LINE 2",                "CITY",                "STATE",                "ZIP",                "REFERENCE",                "TRM CD",                "TRM DYS",                "REQUESTED",                "DISC.%",                "SHP INSTR 1",                "SHP INSTR 2",                "FOB",                "SHP TERMS",                "ACK.DATE",                "BOL",                "PO STATUS",                "TOTAL ORDR VAL",                "TOTAL VAL RECD",                "TOT AMT INVCD",                "LINE",                "TY",                "SIM NO.",                "REQUEST",                "DESC",                "PC",                "EST",                "ORDER",                "NEG",                "TYPE",                "DATE",                "QTY",                "PRICE",                "CNV",                "EXTENSION",                "COSTTYPE",                "COSTDESC",                "DOCKDATE",                "                                                                                                                                                                                                                                                                                                                                                         "
+            };
+            #endregion
+
+            if (!Identifier.Contains("Purchase Order Open Inquiry") && !Identifier.Contains("Purchase Order History Inquiry"))
+                return false;
+
+            for (int i = 1; i <= TotalCols; i++)
+                if (ActiveSheet.Cells[2, i].Value.ToString() != ReportHeaders[i - 1])
+                    return false;
+
+            return true;
+        }
+
+        private void SavePOI()
+        {
+            
+            string fileName = "POI ";
+            string filePath = "\\\\br3615gaps\\gaps\\" + ActiveSheet.Range["A3"].Value3() + " POI Report\\";
+            string Identifier = ActiveSheet.Range["A1"].Value3();
+            string dt = ActiveSheet.Range["C3"].Value3("yyyy-MM-dd");
+
+            if (Identifier.Contains("History"))
+            {
+                filePath += "HISTORY\\";
+                fileName += "HISTORY ";
+            }
+            else if (Identifier.Contains("Open"))
+            {
+                filePath += "OPEN\\";
+                fileName += "OPEN ";
+            }
+            else
+            {
+                MessageBox.Show("An error occured while trying to save the report.", "Error - POI not saved");
+                return;
+            }
+
+            for (int i = 3; i <= ActiveSheet.UsedRange.Rows.Count; i++)
+            {
+                if (ActiveSheet.Range["C" + i].Value3("yyyy-MM-dd") != dt)
+                {
+                    MessageBox.Show("Multiple dates were found.", "Error - POI not saved");
+                    return;
+                }
+            }
+
+            fileName += " " + dt;
+            SaveActiveBook(filePath, fileName, Excel.XlFileFormat.xlCSV);
+        }
+
         #endregion
 
         public void Save325()
