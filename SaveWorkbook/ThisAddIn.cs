@@ -734,7 +734,58 @@ namespace SaveWorkbook
             #region Column Headers
             string[] ReportHeaders = new string[52] 
             {
-                "BRANCH",                " PO NUMBER",                "PO DATE",                "PO TYPE",                "SUPPLIER",                "NAME",                "ADDRESS LINE 1",                "ADDRESS LINE 2",                "CITY",                "STATE",                "ZIP",                "SHIP TO",                "NAME",                "ADDRESS LINE 1",                "ADDRESS LINE 2",                "CITY",                "STATE",                "ZIP",                "REFERENCE",                "TRM CD",                "TRM DYS",                "REQUESTED",                "DISC.%",                "SHP INSTR 1",                "SHP INSTR 2",                "FOB",                "SHP TERMS",                "ACK.DATE",                "BOL",                "PO STATUS",                "TOTAL ORDR VAL",                "TOTAL VAL RECD",                "TOT AMT INVCD",                "LINE",                "TY",                "SIM NO.",                "REQUEST",                "DESC",                "PC",                "EST",                "ORDER",                "NEG",                "TYPE",                "DATE",                "QTY",                "PRICE",                "CNV",                "EXTENSION",                "COSTTYPE",                "COSTDESC",                "DOCKDATE",                "                                                                                                                                                                                                                                                                                                                                                         "
+                "BRANCH",
+                " PO NUMBER",
+                "PO DATE",
+                "PO TYPE",
+                "SUPPLIER",
+                "NAME",
+                "ADDRESS LINE 1",
+                "ADDRESS LINE 2",
+                "CITY",
+                "STATE",
+                "ZIP",
+                "SHIP TO",
+                "NAME",
+                "ADDRESS LINE 1",
+                "ADDRESS LINE 2",
+                "CITY",
+                "STATE",
+                "ZIP",
+                "REFERENCE",
+                "TRM CD",
+                "TRM DYS",
+                "REQUESTED",
+                "DISC.%",
+                "SHP INSTR 1",
+                "SHP INSTR 2",
+                "FOB",
+                "SHP TERMS",
+                "ACK.DATE",
+                "BOL",
+                "PO STATUS",
+                "TOTAL ORDR VAL",
+                "TOTAL VAL RECD",
+                "TOT AMT INVCD",
+                "LINE",
+                "TY",
+                "SIM NO.",
+                "REQUEST",
+                "DESC",
+                "PC",
+                "EST",
+                "ORDER",
+                "NEG",
+                "TYPE",
+                "DATE",
+                "QTY",
+                "PRICE",
+                "CNV",
+                "EXTENSION",
+                "COSTTYPE",
+                "COSTDESC",
+                "DOCKDATE",
+                "                                                                                                                                                                                                                                                                                                                                                         "
             };
             #endregion
 
@@ -750,7 +801,6 @@ namespace SaveWorkbook
 
         private void SavePOI()
         {
-            
             string fileName = "POI ";
             string filePath = "\\\\br3615gaps\\gaps\\" + ActiveSheet.Range["A3"].Value3() + " POI Report\\";
             string Identifier = ActiveSheet.Range["A1"].Value3();
@@ -781,7 +831,7 @@ namespace SaveWorkbook
                 }
             }
 
-            fileName += " " + dt;
+            fileName += dt;
             SaveActiveBook(filePath, fileName, Excel.XlFileFormat.xlCSV);
         }
 
