@@ -161,3 +161,10 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+
+# vs-sp1 ignores
+SaveWorkbook/Properties/Resources.Designer.cs
+SaveWorkbook/Properties/Settings.Designer.cs
+SaveWorkbook/SaveWorkbook.csproj
+SaveWorkbook/ThisAddIn.Designer.cs
+SaveWorkbook/ThisAddIn.Designer.xml
