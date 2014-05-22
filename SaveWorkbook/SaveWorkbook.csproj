@@ -37,7 +37,7 @@
     <PublishUrl>\\br3615gaps\gaps\Excel Add-Ins\SaveWorkbook\publish\</PublishUrl>
     <InstallUrl />
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.1.2</ApplicationVersion>
+    <ApplicationVersion>1.0.1.3</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>0</UpdateInterval>
