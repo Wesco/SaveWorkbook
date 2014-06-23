@@ -561,16 +561,16 @@ namespace SaveWorkbook
             DateTime dt = DateTime.Now;
             string Branch = (ActiveSheet.Range["A2"].Value).ToString();
             string sPath = Properties.Settings.Default.PathGAPS + Branch + @" Gaps Download\" + String.Format("{0:yyyy}", dt) + @"\";
-            string sFile = Branch + " " + Today() + ".xlsx";
+            string sFile = Branch + " " + Today() + ".csv";
 
             if (!Directory.Exists(sPath))
                 Directory.CreateDirectory(sPath);
 
             try
             {
-                //Try to verify that the file being saved is actuall GAPS
+                //Try to verify that the file being saved is GAPS
                 if ((ActiveSheet.Range["A1"].Value).ToString() == "Branch_id" && (ActiveSheet.Range["CU1"].Value).ToString() == "Wdc_rt_qty")
-                    ActiveWorkbook.SaveAs(sPath + sFile, Excel.XlFileFormat.xlOpenXMLWorkbook);
+                    ActiveWorkbook.SaveAs(sPath + sFile, Excel.XlFileFormat.xlCSV);
             }
             catch (Exception e)
             {
