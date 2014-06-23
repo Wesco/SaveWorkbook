@@ -37,7 +37,7 @@
     <PublishUrl>\\br3615gaps\gaps\Excel Add-Ins\SaveWorkbook\publish\</PublishUrl>
     <InstallUrl />
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.1.3</ApplicationVersion>
+    <ApplicationVersion>1.0.1.4</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>0</UpdateInterval>
@@ -260,7 +260,7 @@
     </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>5606DCEC2A645D07DC755788CA9390E150D8C78F</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>26361F2C87215E3E5E8E51ED0C1399E4ED8F4C48</ManifestCertificateThumbprint>
   </PropertyGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
