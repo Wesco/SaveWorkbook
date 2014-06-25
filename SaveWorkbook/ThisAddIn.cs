@@ -568,9 +568,8 @@ namespace SaveWorkbook
 
             try
             {
-                //Try to verify that the file being saved is GAPS
-                if ((ActiveSheet.Range["A1"].Value).ToString() == "Branch_id" && (ActiveSheet.Range["CU1"].Value).ToString() == "Wdc_rt_qty")
-                    ActiveWorkbook.SaveAs(sPath + sFile, Excel.XlFileFormat.xlCSV);
+                ActiveWorkbook.SaveAs(sPath + sFile, Excel.XlFileFormat.xlCSV);
+                ActiveWorkbook.Saved = true;
             }
             catch (Exception e)
             {
