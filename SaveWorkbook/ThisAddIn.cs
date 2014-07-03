@@ -561,14 +561,15 @@ namespace SaveWorkbook
             DateTime dt = DateTime.Now;
             string Branch = (ActiveSheet.Range["A2"].Value).ToString();
             string sPath = Properties.Settings.Default.PathGAPS + Branch + @" Gaps Download\" + String.Format("{0:yyyy}", dt) + @"\";
-            string sFile = Branch + " " + Today() + ".csv";
+            string sFile = Branch + " " + Today();
 
             if (!Directory.Exists(sPath))
                 Directory.CreateDirectory(sPath);
 
             try
             {
-                ActiveWorkbook.SaveAs(sPath + sFile, Excel.XlFileFormat.xlCSV);
+                ActiveWorkbook.SaveAs(sPath + sFile + ".csv", Excel.XlFileFormat.xlCSV);
+                ActiveWorkbook.SaveAs(sPath + sFile + ".xlsx", Excel.XlFileFormat.xlOpenXMLWorkbook);
                 ActiveWorkbook.Saved = true;
             }
             catch (Exception e)
