@@ -563,13 +563,18 @@ namespace SaveWorkbook
             string sPath = Properties.Settings.Default.PathGAPS + Branch + @" Gaps Download\" + String.Format("{0:yyyy}", dt) + @"\";
             string sFile = Branch + " " + Today();
 
+            //Remove line breaks in notes
+            Application.DisplayAlerts = false;
+            ActiveSheet.Columns["AQ:AQ"].Replace("\n", " ");
+            ActiveSheet.Columns["AQ:AQ"].Replace("&#x0D;", "");
+            Application.DisplayAlerts = true;
+
             if (!Directory.Exists(sPath))
                 Directory.CreateDirectory(sPath);
 
             try
             {
                 ActiveWorkbook.SaveAs(sPath + sFile + ".csv", Excel.XlFileFormat.xlCSV);
-                ActiveWorkbook.SaveAs(sPath + sFile + ".xlsx", Excel.XlFileFormat.xlOpenXMLWorkbook);
                 ActiveWorkbook.Saved = true;
             }
             catch (Exception e)
