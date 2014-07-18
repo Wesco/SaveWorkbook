@@ -82,5 +82,17 @@ namespace SaveWorkbook.Properties {
                 this["PathAP1000"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\br3615gaps\\gaps\\")]
+        public string PathSM {
+            get {
+                return ((string)(this["PathSM"]));
+            }
+            set {
+                this["PathSM"] = value;
+            }
+        }
     }
 }

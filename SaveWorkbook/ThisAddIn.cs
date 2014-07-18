@@ -113,6 +113,10 @@ namespace SaveWorkbook
                     if (IsPOI())
                         SavePOI();
                 }
+                else if (IsSM())
+                {
+                    SaveSM();
+                }
                 else
                 {
                     MessageBox.Show(RepNotHandled);
@@ -840,6 +844,43 @@ namespace SaveWorkbook
             SaveActiveBook(filePath, fileName, Excel.XlFileFormat.xlCSV);
         }
 
+        #endregion
+
+        #region SM
+        bool IsSM()
+        {
+            #region List of report headers
+            string[] Headers = new string[22]
+            {
+                "br",                "br_name",                "nat_act",                "dpc",                "dpc_name",                "ship",                "inv_date",                "inv",                "prod",                "MfrCode",                "mfr",                "item",                "descr",                "quantity",                "sales",                "cost",                "margin",                "bm_p",                "os_name",                "rg",                "nat_name",                "catalog_no"
+            };
+            #endregion
+            int TotalCols = ActiveSheet.UsedRange.Columns.Count;
+            Excel.Range ReportHeaders = ActiveSheet.Range[ActiveSheet.Cells[1, 1], ActiveSheet.Cells[1, TotalCols]];
+
+            if (ReportHeaders.Columns.Count == Headers.Length)
+                for (int i = 0; i < Headers.Length; i++)
+                {
+                    if (ReportHeaders.Cells[1, i + 1].Value != Headers[i])
+                        return false;
+                }
+            else
+                return false;
+
+            return true;
+        }
+
+        void SaveSM()
+        {
+            // Path + branch
+            string path = Properties.Settings.Default.PathSM + "\\" + ActiveSheet.Range["A2"].Value3() + "\\";
+            // SM + yyyy-mm of invoice + first day of the month
+            string fileName = "SM " + string.Format("{0}:yyyy-MM", ActiveSheet.Range["G2"].Value3()) + "01.csv";
+
+            // this runs but fails
+            SaveActiveBook(path, fileName, Excel.XlFileFormat.xlCSV);
+
+        }
         #endregion
 
         public void Save325()

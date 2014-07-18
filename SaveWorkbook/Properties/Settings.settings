@@ -17,5 +17,8 @@
     <Setting Name="PathAP1000" Type="System.String" Scope="User">
       <Value Profile="(Default)">\\br3615gaps\gaps\3615 AP1000 Download\</Value>
     </Setting>
+    <Setting Name="PathSM" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\\br3615gaps\gaps\</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
