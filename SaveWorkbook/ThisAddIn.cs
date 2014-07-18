@@ -877,6 +877,7 @@ namespace SaveWorkbook
             };
             #endregion
             int TotalCols = ActiveSheet.UsedRange.Columns.Count;
+            int TotalRows = ActiveSheet.UsedRange.Rows.Count;
             Excel.Range ReportHeaders = ActiveSheet.Range[ActiveSheet.Cells[1, 1], ActiveSheet.Cells[1, TotalCols]];
 
             if (ReportHeaders.Columns.Count == Headers.Length)
@@ -893,12 +894,19 @@ namespace SaveWorkbook
 
         void SaveSM()
         {
-            // Path + branch
-            string path = Properties.Settings.Default.PathSM + "\\" + ActiveSheet.Range["A2"].Value3() + "\\";
-            // SM + yyyy-mm of invoice + first day of the month
-            string fileName = "SM " + string.Format("{0}:yyyy-MM", ActiveSheet.Range["G2"].Value3()) + "01.csv";
+            int TotalRows = ActiveSheet.UsedRange.Rows.Count;
+            string path = Properties.Settings.Default.PathSM + ActiveSheet.Range["A2"].Value3() + " Sales Margin\\";
+            string fileName = "SM " + string.Format("{0:yyyy-MM}", ActiveSheet.Range["G2"].Value) + "-01.csv";
+            Excel.Range DateList = ActiveSheet.Range[ActiveSheet.Cells[1, 7], ActiveSheet.Cells[TotalRows, 7]];
+            DateTime dt = ActiveSheet.Range["G2"].Value;
 
-            // this runs but fails
+            for (int i = 2; i <= TotalRows; i++)
+                if (string.Format("{0:yyyy-MM}", DateList.Cells[i, 1].Value) != string.Format("{0:yyyy-MM}", dt))
+                {
+                    MessageBox.Show("Multiple months were found.", "Save Error");
+                    return;
+                }
+
             SaveActiveBook(path, fileName, Excel.XlFileFormat.xlCSV);
 
         }
