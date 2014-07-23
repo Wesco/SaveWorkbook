@@ -741,7 +741,7 @@ namespace SaveWorkbook
             string Identifier = ActiveSheet.Range["A1"].Value3();
             int TotalCols = ActiveSheet.UsedRange.Columns.Count;
             #region Column Headers
-            string[] ReportHeaders = new string[52] 
+            string[] ReportHeaders = new string[53] 
             {
                 "BRANCH",
                 " PO NUMBER",
@@ -786,15 +786,16 @@ namespace SaveWorkbook
                 "ORDER",
                 "NEG",
                 "TYPE",
+                "ENTERED",
                 "DATE",
+                "PRM QTY",
                 "QTY",
                 "PRICE",
                 "CNV",
                 "EXTENSION",
                 "COSTTYPE",
                 "COSTDESC",
-                "DOCKDATE",
-                "                                                                                                                                                                                                                                                                                                                                                         "
+                "DOCKDATE"
             };
             #endregion
 
