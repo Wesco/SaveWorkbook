@@ -276,10 +276,7 @@ namespace SaveWorkbook
                     if (IsUnique(3, ActiveSheet.UsedRange.Rows.Count - 1, "Q"))
                         SavePath += Sequence + "\\" + OSN + "\\";
                     else
-                    {
-                        MessageBox.Show("Multiple outside sales numbers were found.", "Sequence ByOutsideSalesperson - Error");
-                        return;
-                    }
+                        SavePath += Sequence + "\\ALL\\";
 
                     break;
                 #endregion
