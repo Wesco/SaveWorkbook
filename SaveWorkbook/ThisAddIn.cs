@@ -195,7 +195,18 @@ namespace SaveWorkbook
             {
                 #region ByOrder
                 case "ByOrder":
-                    SavePath += Sequence + "\\";
+                    string order = ActiveSheet.Range["D3"].Value3();
+                    bool hasMultiple = false;
+
+                    for (int i = 3; i < ActiveSheet.UsedRange.Rows.Count; i++)
+                        if (ActiveSheet.Range["D" + i].Value3() != order)
+                            hasMultiple = true;
+
+                    if (hasMultiple)
+                        SavePath += Sequence + "\\ALL\\";
+                    else
+                        SavePath += Sequence + "\\" + order + "\\";
+
                     break;
                 #endregion
 
