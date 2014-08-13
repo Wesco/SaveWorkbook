@@ -193,6 +193,10 @@ namespace SaveWorkbook
             #region Sequence
             switch (Sequence)
             {
+                // By SIM Number not handled
+                // By Gross Margin not handled
+                // By Dollar Amount not handled
+
                 #region ByOrder
                 case "ByOrder":
                     string Order = ActiveSheet.Range["D3"].Value3();
@@ -241,23 +245,24 @@ namespace SaveWorkbook
                     break;
                 #endregion
 
-                // By SIM Number not handled
-                // By Gross Margin not handled
-                // By Dollar Amount not handled
-
                 #region ByInsideSalesperson
                 case "ByInsideSalesperson":
-                    //TODO:
-                    //Add a check to make sure only one sales number was chosen
-                    //If multiple were chosen return as not handled
-                    string ISN = GetString(ActiveSheet.Cells[3, FindColumnHeader(2, "IN")]);
-                    if (ISN != String.Empty)
-                        SavePath += Sequence + "\\" + ISN + "\\";
-                    else
+                    string ISN = ActiveSheet.Range["P3"].Value3();
+
+                    if (ISN == String.Empty)
                     {
                         MessageBox.Show("Unable to find inside sales number.", "Sequence ByISN - Error");
                         return;
                     }
+
+                    if (IsUnique(3, ActiveSheet.UsedRange.Rows.Count - 1, "P"))
+                        SavePath += Sequence + "\\" + ISN + "\\";
+                    else
+                    {
+                        MessageBox.Show("Multiple inside sales numbers were found.", "Sequence ByInsideSalesperson - Error");
+                        return;
+                    }
+
                     break;
                 #endregion
 
