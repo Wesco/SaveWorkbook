@@ -258,10 +258,7 @@ namespace SaveWorkbook
                     if (IsUnique(3, ActiveSheet.UsedRange.Rows.Count - 1, "P"))
                         SavePath += Sequence + "\\" + ISN + "\\";
                     else
-                    {
-                        MessageBox.Show("Multiple inside sales numbers were found.", "Sequence ByInsideSalesperson - Error");
-                        return;
-                    }
+                        SavePath += Sequence + "\\ALL\\";
 
                     break;
                 #endregion
