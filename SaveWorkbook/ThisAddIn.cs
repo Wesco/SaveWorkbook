@@ -202,7 +202,7 @@ namespace SaveWorkbook
                     string Order = ActiveSheet.Range["D3"].Value3();
 
                     if (IsUnique(3, ActiveSheet.UsedRange.Rows.Count - 1, "D"))
-                        SavePath += Sequence + "\\" + Order + "\\";
+                        SavePath += Sequence + "\\" + ("000000" + Order).Right(6) + "\\";
                     else
                         SavePath += Sequence + "\\ALL\\";
 
