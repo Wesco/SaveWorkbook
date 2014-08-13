@@ -195,35 +195,32 @@ namespace SaveWorkbook
             {
                 #region ByOrder
                 case "ByOrder":
-                    string order = ActiveSheet.Range["D3"].Value3();
-                    bool hasMultiple = false;
+                    string Order = ActiveSheet.Range["D3"].Value3();
 
-                    for (int i = 3; i < ActiveSheet.UsedRange.Rows.Count; i++)
-                        if (ActiveSheet.Range["D" + i].Value3() != order)
-                            hasMultiple = true;
-
-                    if (hasMultiple)
-                        SavePath += Sequence + "\\ALL\\";
+                    if (IsUnique(3, ActiveSheet.UsedRange.Rows.Count - 1, "D"))
+                        SavePath += Sequence + "\\" + Order + "\\";
                     else
-                        SavePath += Sequence + "\\" + order + "\\";
+                        SavePath += Sequence + "\\ALL\\";
 
                     break;
                 #endregion
 
                 #region ByCustomer
                 case "ByCustomer":
-                    //TODO:
-                    //Check to see if a range of customers was chosen
-                    //If more than one DPC is listed return as not handled
-                    int ColNum = FindColumnHeader(2, "CUSTOMER");
-                    string Customer = GetString(ActiveSheet.Cells[3, ColNum]);
-                    if (Customer != String.Empty)
-                        SavePath += Sequence + "\\" + Customer + "\\";
-                    else
+                    string Customer = ActiveSheet.Range["C3"].Value3();
+
+                    // This should never happen unless a user modifies the report
+                    if (Customer == String.Empty)
                     {
                         MessageBox.Show("Unable to find customer DPC.", "Sequence ByCustomer - Error");
                         return;
                     }
+
+                    if (IsUnique(3, ActiveSheet.UsedRange.Rows.Count - 1, "C"))
+                        SavePath += Sequence + "\\" + Customer + "\\";
+                    else
+                        SavePath += Sequence + "\\ALL\\";
+
                     break;
                 #endregion
 
@@ -1090,6 +1087,25 @@ namespace SaveWorkbook
                 }
             else
                 return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Checks a column to see if it contains one or multiple values
+        /// </summary>
+        /// <param name="StartRow"></param>
+        /// <param name="EndRow"></param>
+        /// <param name="Column"></param>
+        /// <param name="Value"></param>
+        /// <returns></returns>
+        private bool IsUnique(int StartRow, int EndRow, string Column)
+        {
+            string Value = ActiveSheet.Range[Column + StartRow].Value3();
+
+            for (int i = StartRow; i <= EndRow; i++)
+                if (ActiveSheet.Range[Column + i].Value3() != Value)
+                    return false;
 
             return true;
         }
