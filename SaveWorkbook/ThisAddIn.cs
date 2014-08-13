@@ -268,17 +268,22 @@ namespace SaveWorkbook
 
                 #region ByOutsideSalesperson
                 case "ByOutsideSalesperson":
-                    //TODO:
-                    //Add a check to make sure only one sales number was chosen
-                    //If multiple were chosen return as not handled
-                    string OSN = GetString(ActiveSheet.Cells[3, FindColumnHeader(2, "OUT")]);
-                    if (OSN != String.Empty)
-                        SavePath += Sequence + "\\" + OSN + "\\";
-                    else
+                    string OSN = ActiveSheet.Range["Q3"].Value3();
+
+                    if (OSN == String.Empty)
                     {
                         MessageBox.Show("Unable to find outside sales number.", "Sequence ByOSN - Error");
                         return;
                     }
+
+                    if (IsUnique(3, ActiveSheet.UsedRange.Rows.Count - 1, "Q"))
+                        SavePath += Sequence + "\\" + OSN + "\\";
+                    else
+                    {
+                        MessageBox.Show("Multiple outside sales numbers were found.", "Sequence ByOutsideSalesperson - Error");
+                        return;
+                    }
+
                     break;
                 #endregion
 
