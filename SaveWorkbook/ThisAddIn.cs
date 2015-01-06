@@ -88,11 +88,15 @@ namespace SaveWorkbook
                 {
                     if (Is473())
                         Save473();
+                    else
+                        MessageBox.Show(RepNotHandled, "RepType 473 - Error");
                 }
                 else if (reptype == "Bra")
                 {
                     if (IsGaps())
                         SaveGAPS();
+                    else
+                        MessageBox.Show(RepNotHandled, "RepType GAPS - Error");
                 }
                 else if (reptype == "SIM")
                 {
@@ -102,16 +106,22 @@ namespace SaveWorkbook
                 {
                     if (IsIROOR())
                         SaveIROpenOrders();
+                    else
+                        MessageBox.Show(RepNotHandled, "RepType IR OOR - Error");
                 }
                 else if (reptype == "1AP")
                 {
                     if (IsAP1000())
                         SaveAP1000();
+                    else
+                        MessageBox.Show(RepNotHandled, "RepType AP1000 - Error");
                 }
                 else if (reptype == DateTime.Now.ToString("MM/"))
                 {
                     if (IsPOI())
                         SavePOI();
+                    else
+                        MessageBox.Show(RepNotHandled, "RepType POI - Error");
                 }
                 else if (IsSM())
                 {
@@ -864,7 +874,7 @@ namespace SaveWorkbook
         bool IsSM()
         {
             #region List of report headers
-            string[] Headers = new string[22]
+            string[] Headers = new string[23]
             {
                 "br",
                 "br_name",
@@ -875,7 +885,7 @@ namespace SaveWorkbook
                 "inv_date",
                 "inv",
                 "prod",
-                "MfrCode",
+                "mfrcode",
                 "mfr",
                 "item",
                 "descr",
@@ -887,42 +897,44 @@ namespace SaveWorkbook
                 "os_name",
                 "rg",
                 "nat_name",
-                "catalog_no"
+                "catalog_no",
+                "company_name"
             };
             #endregion
             int TotalCols = ActiveSheet.UsedRange.Columns.Count;
             int TotalRows = ActiveSheet.UsedRange.Rows.Count;
+            Excel.Range DateList = ActiveSheet.Range[ActiveSheet.Cells[1, 7], ActiveSheet.Cells[TotalRows, 7]];
             Excel.Range ReportHeaders = ActiveSheet.Range[ActiveSheet.Cells[1, 1], ActiveSheet.Cells[1, TotalCols]];
 
             if (ReportHeaders.Columns.Count == Headers.Length)
                 for (int i = 0; i < Headers.Length; i++)
                 {
-                    if (ReportHeaders.Cells[1, i + 1].Value != Headers[i])
+                    if (ReportHeaders.Cells[1, i + 1].Value.ToLower() != Headers[i])
                         return false;
                 }
             else
                 return false;
+
+            // Verify the report only contains 1 month of data
+            DateTime dt = ActiveSheet.Range["G2"].Value;
+            for (int i = 2; i <= TotalRows; i++)
+            {
+                if (string.Format("{0:yyyy-MM}", DateList.Cells[i, 1].Value) != string.Format("{0:yyyy-MM}", dt))
+                {
+                    MessageBox.Show("Multiple months were found.", "Save Error");
+                    return false;
+                }
+            }
 
             return true;
         }
 
         void SaveSM()
         {
-            int TotalRows = ActiveSheet.UsedRange.Rows.Count;
-            string path = Properties.Settings.Default.PathSM + ActiveSheet.Range["A2"].Value3() + " Sales Margin\\";
+            string filePath = Properties.Settings.Default.PathSM + ActiveSheet.Range["A2"].Value3() + " Sales Margin\\";
             string fileName = "SM " + string.Format("{0:yyyy-MM}", ActiveSheet.Range["G2"].Value) + "-01.csv";
-            Excel.Range DateList = ActiveSheet.Range[ActiveSheet.Cells[1, 7], ActiveSheet.Cells[TotalRows, 7]];
-            DateTime dt = ActiveSheet.Range["G2"].Value;
 
-            for (int i = 2; i <= TotalRows; i++)
-                if (string.Format("{0:yyyy-MM}", DateList.Cells[i, 1].Value) != string.Format("{0:yyyy-MM}", dt))
-                {
-                    MessageBox.Show("Multiple months were found.", "Save Error");
-                    return;
-                }
-
-            SaveActiveBook(path, fileName, Excel.XlFileFormat.xlCSV);
-
+            SaveActiveBook(filePath, fileName, Excel.XlFileFormat.xlCSV);
         }
         #endregion
 
@@ -1115,7 +1127,7 @@ namespace SaveWorkbook
         }
 
         /// <summary>
-        /// Gets today plus X number of days and converts it into ISO 8601 compliant string.
+        /// Gets today's date plus X number of days and converts it into ISO 8601 compliant string.
         /// </summary>
         /// <param name="Days"></param>
         /// <returns>Todays date in yyyy-MM-dd format</returns>
